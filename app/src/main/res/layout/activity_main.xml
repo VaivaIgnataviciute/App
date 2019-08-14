@@ -9,20 +9,21 @@
 
 
     <ToggleButton
+        android:id="@+id/toggleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/toggleButton"
-        android:textOn="Wi-Fi On"
+        android:onClick="onToggleClicked"
         android:textOff="Wi-Fi Off"
-        android:onClick="onToggleClicked" />
+        android:textOn="Wi-Fi On" />
 
     <ListView
+        android:id="@+id/listView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView">
+        android:layout_height="wrap_content">
 
 
     </ListView>
 
 
 </LinearLayout>
+

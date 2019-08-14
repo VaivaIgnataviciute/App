@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
+import android.net.wifi.SupplicantState;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.View;
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private WifiManager wifiManager;
     private BroadcastReceiver wifiReciever;
     private ArrayAdapter adapter;
+    SupplicantState supState;
 
 
     @Override
@@ -30,15 +33,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView listView = findViewById(R.id .listView);
-        adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1);
+        ListView listView = findViewById(R.id.listView);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         listView.setAdapter(adapter);
 
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         wifiReciever = new WiFiScanReceiver();
 
-        
+
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        supState = wifiInfo.getSupplicantState();
+
+
+
 
     }
 
@@ -46,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     public void onToggleClicked(View view) {
 
         adapter.clear();
-        ToggleButton button =  findViewById(R.id.toggleButton);
+        ToggleButton button = findViewById(R.id.toggleButton);
 
         if (wifiManager == null) {
             //device does not support wifi
@@ -54,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             button.setChecked(false);
         } else {
-            if (button.isChecked()){ // to turn on wifi
+            if (button.isChecked()) { // to turn on wifi
                 if (!wifiManager.isWifiEnabled()) {
                     Toast.makeText(getApplicationContext(), "Wi-Fi is turned on." +
                                     "\n" + "Scanning for access points...",
@@ -68,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
                 wifiManager.startScan();
 
-                } else {
+            } else {
                 Toast.makeText(getApplicationContext(), "Wi-Fi is turned off.",
                         Toast.LENGTH_SHORT).show();
             }
@@ -77,13 +85,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class WiFiScanReceiver extends BroadcastReceiver {
-        public void  onReceive (Context context, Intent intent) {
+        public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(action)) {
                 List<ScanResult> wifiScanResultList = wifiManager.getScanResults();
-                for ( int i = 0; i < wifiScanResultList.size(); i++) {
+                for (int i = 0; i < wifiScanResultList.size(); i++) {
                     ScanResult accessPoint = wifiScanResultList.get(i);
-                    String listItem = accessPoint.SSID +", "+accessPoint.BSSID;
+                    String listItem = accessPoint.SSID + ", " + accessPoint.BSSID;
                     adapter.add(listItem);
                 }
             }
@@ -91,14 +99,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    protected void onResume () {
+    protected void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        registerReceiver(wifiReciever,filter);
+        registerReceiver(wifiReciever, filter);
     }
 
 
-    protected void OnPause() {
+    @Override
+    protected void onPause() {
         super.onPause();
         unregisterReceiver(wifiReciever);
     }
