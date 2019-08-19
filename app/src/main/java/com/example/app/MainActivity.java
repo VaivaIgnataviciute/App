@@ -8,13 +8,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import android.net.nsd.NsdManager;
+import android.net.nsd.NsdServiceInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 
+import android.nfc.Tag;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -23,22 +27,21 @@ import android.widget.ToggleButton;
 
 import androidx.appcompat.widget.Toolbar;
 
+import java.net.InetAddress;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
+    private String SERVICE_NAME = "3D printer";
+    private String SERVICE_TYPE = "_cir3dprinter._tcp";
+
+    private InetAddress hostAddress;
+    private int hostPort;
+    private NsdManager mNsdManager;
+    NsdServiceInfo mService;
 
 
-
-
-
-
-
-    private WifiManager wifiManager;
-    private BroadcastReceiver wifiReciever;
-    private ArrayAdapter adapter;
-    SupplicantState supState;
 
 
     @Override
@@ -48,112 +51,146 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Getting toolbar by id
-        Toolbar toolbar =  findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //disabling default title text
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-        // getting listview from layout
-        ListView listView = findViewById(R.id.listView);
-
-        // Creating adapter and array of local AP. Array displays AP's in listview adapter
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        listView.setAdapter(adapter);
-
-        //Using wifi manager API I display all information about succesfull connetion to local network
-        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
-        wifiReciever = new WiFiScanReceiver();
 
 
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        supState = wifiInfo.getSupplicantState();
+        //NSD stuff
 
-
+        mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
+        mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD,  mDiscoveryListener);
 
 
     }
+    /*
 
-     //Creating toogle button which turns on and turns of wifi
-    public void onToggleClicked(View view) {
+    @Override
 
-        adapter.clear();
-        ToggleButton button = findViewById(R.id.toggleButton);
-
-        //if the device can't connect to wifi, it displays toast with message informing user about that.
-        if (wifiManager == null) {
-            //device does not support wifi
-            Toast.makeText(getApplicationContext(), "Oop! Your device does not support Wi-Fi",
-                    Toast.LENGTH_SHORT).show();
-            button.setChecked(false);
-        } else {// otherwise if button is checked,connection was succesful , the wifi scans the local networks and checks for AP's
-            if (button.isChecked()) { // to turn on wifi
-                if (!wifiManager.isWifiEnabled()) {
-                    Toast.makeText(getApplicationContext(), "Wi-Fi is turned on." +
-                                    "\n" + "Scanning for access points...",
-                            Toast.LENGTH_SHORT).show();
-                    wifiManager.setWifiEnabled(true);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Wi-Fi is already turned on." +
-                                    "\n" + "Scanning for access points...",
-                            Toast.LENGTH_SHORT).show();
-                }
-
-                wifiManager.startScan();
-
-            } else { //last case wifi is turn off and no services is available.
-                Toast.makeText(getApplicationContext(), "Wi-Fi is turned off.",
-                        Toast.LENGTH_SHORT).show();
-            }
+    protected void  onPause() {
+        if (mNsdManager != null) {
+            mNsdManager.stopServiceDiscovery(mDiscoveryListener);
         }
-
-    }
-
-    //Using wifi scan receiver we can get the results and iterate them.
-    class WiFiScanReceiver extends BroadcastReceiver {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(action) ) {
-                List<ScanResult> wifiScanResultList = wifiManager.getScanResults();
-                String listItem ;
-                for (int i = 0; i < wifiScanResultList.size(); i++ ) {
-
-
-                    try {
-                        if (i == Integer.parseInt("Thorsens, 70:8b:cd:89:19:e8")) {
-                            break;
-                        }
-                    } catch (NumberFormatException ex) {
-                        System.out.println("Number format exception occurred");
-                    }
-
-                    // once the results are iterated we display their IP addresses and place them in listview.
-                    ScanResult accessPoint = wifiScanResultList.get(i);
-                    listItem = accessPoint.SSID + ", " + accessPoint.BSSID;
-                    adapter.add(listItem);
-
-                    }
-
-            }
-        }
-    }
-
-
-    protected void onResume() {
-        super.onResume();
-        IntentFilter filter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        registerReceiver(wifiReciever, filter);
+        super.onPause();
     }
 
 
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(wifiReciever);
+    protected void onResume() {
+        super.onResume();
+        if( mNsdManager != null) {
+            mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+        }
     }
 
+
+    @Override
+    protected void onDestroy() {
+        if ( mNsdManager != null) {
+          mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+        }
+        super.onDestroy();
+    }
+    */
+    NsdManager.DiscoveryListener mDiscoveryListener = new NsdManager.DiscoveryListener() {
+        @Override
+        public void onStartDiscoveryFailed(String serviceType, int errorCode) {
+            Log.e("TAG", "DiscoveryFailed: Error code: " + errorCode);
+            mNsdManager.stopServiceDiscovery(this);
+
+        }
+
+        @Override
+        public void onStopDiscoveryFailed(String serviceType, int errorCode) {
+            Log.e("TAG", "Discovery failed : Error code: " + errorCode);
+        }
+
+        @Override
+        public void onDiscoveryStarted(String regType) {
+            Log.d("TAG", "Service discovery started");
+
+        }
+
+        @Override
+        public void onDiscoveryStopped(String serviceType) {
+            Log.i("TAG", "Discovery stopped: " + serviceType);
+
+        }
+
+        @Override
+        public void onServiceFound(NsdServiceInfo serviceInfo) {
+
+            Log.d("TAG", "Service discovery success : " + serviceInfo);
+            Log.d("TAG", "Host = " + serviceInfo.getServiceName());
+            Log.d("TAG", "Port = " + String.valueOf(serviceInfo.getPort()));
+
+            if (!serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
+                Log.d("TAG", "Unknown Service Type: " + serviceInfo.getServiceType());
+            }
+
+            else if (serviceInfo.getServiceName().equals(SERVICE_NAME)) {
+                Log.d("TAG", "Same machine " + SERVICE_NAME);
+            } else {
+                Log.d("TAG", "Diff Machine : " + serviceInfo.getServiceName());
+                mNsdManager.resolveService(serviceInfo, new MyResolveListener());
+            }
+
+        }
+
+        @Override
+        public void onServiceLost(NsdServiceInfo nsdServiceInfo) {
+            Log.d("TAG", "Service lost " + nsdServiceInfo);
+
+        }
+    };
+
+    //NsdManager.ResolveListener mResolveListener = new NsdManager.ResolveListener()
+    private class MyResolveListener implements NsdManager.ResolveListener {
+        @Override
+        public void onResolveFailed(NsdServiceInfo nsdServiceInfo, int errorCode) {
+            Log.e("TAG", "Resolved failed " + errorCode);
+            Log.e("TAG", "Service = " + nsdServiceInfo);
+        }
+
+        @Override
+        public void onServiceResolved(NsdServiceInfo nsdServiceInfo) {
+
+            Log.d("TAG", "Resolve Succeeded " + nsdServiceInfo);
+
+            if (nsdServiceInfo.getServiceType().equals(SERVICE_TYPE)) {
+                Log.d("TAG", "Same IP");
+                return;
+            }
+
+            hostPort = nsdServiceInfo.getPort();
+            hostAddress = nsdServiceInfo.getHost();
+
+        }
+    }
+
+/*
+    public void discoverServices() {
+        if (mDiscoveryListener != null) {
+            try {
+                mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+            } finally {
+
+            }
+            mDiscoveryListener = null;
+        }
+    }
+
+    public NsdServiceInfo getChosenServiceInfo() {
+        return mService;
+    }
+    */
+
+
 }
+
 

@@ -25,10 +25,23 @@
         android:layout_height="wrap_content"
         android:onClick="onToggleClicked"
         android:textOff="wifi is turn off"
-        android:textOn="wifi is on " />
+        android:textOn="wifi is on "
+        android:layout_marginLeft="10dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/allowLocation"
+        android:textSize="15dp"
+        android:paddingLeft="15dp"
+        />
 
     <ListView
+
+
         android:id="@+id/listView"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
