@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import android.content.BroadcastReceiver;
+import android.net.nsd.NsdServiceInfo;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -22,6 +24,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -54,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         //Getting toolbar by id
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
 
         //disabling default title text
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -162,7 +167,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onServiceResolved(NsdServiceInfo nsdServiceInfo) {
+            String nsdServiceInfoName = nsdServiceInfo.getServiceName();
 
+
+            TextView myTextView =  findViewById(R.id.serviceName);
+            myTextView.setText(nsdServiceInfoName);
+            
             Log.d("TAG", "Resolve Succeeded " + nsdServiceInfo);
 
             if (nsdServiceInfo.getServiceType().equals(SERVICE_TYPE)) {

@@ -19,20 +19,10 @@
 
 
 
-    <ToggleButton
-        android:id="@+id/toggleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onToggleClicked"
-        android:textOff="wifi is turn off"
-        android:textOn="wifi is on "
-        android:layout_marginLeft="10dp"
-        />
-
     <TextView
         android:layout_width="wrap_content"
+        android:id="@+id/serviceName"
         android:layout_height="wrap_content"
-        android:text="@string/allowLocation"
         android:textSize="15dp"
         android:paddingLeft="15dp"
         />
