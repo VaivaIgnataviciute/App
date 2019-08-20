@@ -33,8 +33,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String SERVICE_NAME = "3D printer";
-    private String SERVICE_TYPE = "_cir3dprinter._tcp";
+    private String SERVICE_NAME = "3d print";
+    private String SERVICE_TYPE = "_cir3dprinter._tcp.";
+
 
     private InetAddress hostAddress;
     private int hostPort;
@@ -127,17 +128,20 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d("TAG", "Service discovery success : " + serviceInfo);
             Log.d("TAG", "Host = " + serviceInfo.getServiceName());
-            Log.d("TAG", "Port = " + String.valueOf(serviceInfo.getPort()));
+            Log.d("TAG", "Port = " + serviceInfo.getPort());
 
-            if (!serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
+            if (serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
                 Log.d("TAG", "Unknown Service Type: " + serviceInfo.getServiceType());
+                mNsdManager.resolveService(serviceInfo, mResolveListener);
+
             }
 
             else if (serviceInfo.getServiceName().equals(SERVICE_NAME)) {
                 Log.d("TAG", "Same machine " + SERVICE_NAME);
+
             } else {
                 Log.d("TAG", "Diff Machine : " + serviceInfo.getServiceName());
-                mNsdManager.resolveService(serviceInfo, new MyResolveListener());
+
             }
 
         }
@@ -149,8 +153,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    //NsdManager.ResolveListener mResolveListener = new NsdManager.ResolveListener()
-    private class MyResolveListener implements NsdManager.ResolveListener {
+    NsdManager.ResolveListener mResolveListener = new NsdManager.ResolveListener() {
         @Override
         public void onResolveFailed(NsdServiceInfo nsdServiceInfo, int errorCode) {
             Log.e("TAG", "Resolved failed " + errorCode);
@@ -167,11 +170,11 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            hostPort = nsdServiceInfo.getPort();
-            hostAddress = nsdServiceInfo.getHost();
+            hostPort= nsdServiceInfo.getPort();
+             String ipAddress = nsdServiceInfo.getHost().getHostAddress();
 
         }
-    }
+    };
 
 /*
     public void discoverServices() {
