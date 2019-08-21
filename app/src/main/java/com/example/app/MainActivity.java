@@ -18,10 +18,16 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 
 import android.nfc.Tag;
+import android.os.Build;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private int hostPort;
     private NsdManager mNsdManager;
     NsdServiceInfo mService;
+    private WebView mWebView;
+
 
 
 
@@ -59,10 +67,35 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-
         //disabling default title text
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        mWebView = findViewById(R.id.activity_main_webview);
+
+        //Enable JavasScript for webView
+
+        WebSettings webSettings = mWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        mWebView.setWebViewClient(new WebViewClient());
+
+        mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+
+
+        mWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+        mWebView.getSettings().setLoadWithOverviewMode(true);
+        mWebView.getSettings().setUseWideViewPort(true);
+        mWebView.getSettings().setBuiltInZoomControls(true);
+        mWebView.getSettings().setSupportZoom(true);
+
+        getWindow().setFlags( WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+
+        if (Build.VERSION.SDK_INT >=19) {
+            mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }
+        else {
+            mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE,null);
+        }
 
 
 
@@ -73,6 +106,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public void onBackPressed(){
+        if (mWebView.canGoBack() && mWebView.isFocused()) {
+            mWebView.goBack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     /*
 
     @Override
@@ -147,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Log.d("TAG", "Diff Machine : " + serviceInfo.getServiceName());
 
+
             }
 
         }
@@ -167,11 +211,32 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onServiceResolved(NsdServiceInfo nsdServiceInfo) {
-            String nsdServiceInfoName = nsdServiceInfo.getServiceName();
+
+            final String nsdServiceInfoName = nsdServiceInfo.getServiceName();
 
 
-            TextView myTextView =  findViewById(R.id.serviceName);
-            myTextView.setText(nsdServiceInfoName);
+          final TextView myTextView =  findViewById(R.id.serviceName);
+
+
+          //Set textView  in separate UI thread to run code outside the main UI thread.
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    myTextView.setText(nsdServiceInfoName);
+                    myTextView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //Toast.makeText(MainActivity.this, "im printer",Toast.LENGTH_SHORT).show();
+                            mWebView.loadUrl("http://10.0.0.115");
+
+                        }
+                    });
+
+                }
+            });
+
+
             
             Log.d("TAG", "Resolve Succeeded " + nsdServiceInfo);
 
