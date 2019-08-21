@@ -53,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private WebView mWebView;
 
 
-
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setJavaScriptEnabled(true);
         mWebView.setWebViewClient(new WebViewClient());
 
-        mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        //mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 
 
         mWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
@@ -87,28 +84,26 @@ public class MainActivity extends AppCompatActivity {
         mWebView.getSettings().setBuiltInZoomControls(true);
         mWebView.getSettings().setSupportZoom(true);
 
-        getWindow().setFlags( WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
 
-        if (Build.VERSION.SDK_INT >=19) {
+        if (Build.VERSION.SDK_INT >= 19) {
             mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        } else {
+            mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
-        else {
-            mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE,null);
-        }
-
 
 
         //NSD stuff
 
         mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
-        mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD,  mDiscoveryListener);
+        mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
 
 
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         if (mWebView.canGoBack() && mWebView.isFocused()) {
             mWebView.goBack();
         } else {
@@ -178,17 +173,16 @@ public class MainActivity extends AppCompatActivity {
             Log.d("TAG", "Host = " + serviceInfo.getServiceName());
             Log.d("TAG", "Port = " + serviceInfo.getPort());
 
-            if (serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
+            if (!serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
                 Log.d("TAG", "Unknown Service Type: " + serviceInfo.getServiceType());
-                mNsdManager.resolveService(serviceInfo, mResolveListener);
 
-            }
 
-            else if (serviceInfo.getServiceName().equals(SERVICE_NAME)) {
+            } else if (serviceInfo.getServiceName().equals(SERVICE_NAME)) {
                 Log.d("TAG", "Same machine " + SERVICE_NAME);
 
             } else {
                 Log.d("TAG", "Diff Machine : " + serviceInfo.getServiceName());
+                mNsdManager.resolveService(serviceInfo, mResolveListener);
 
 
             }
@@ -215,10 +209,10 @@ public class MainActivity extends AppCompatActivity {
             final String nsdServiceInfoName = nsdServiceInfo.getServiceName();
 
 
-          final TextView myTextView =  findViewById(R.id.serviceName);
+            final TextView myTextView = findViewById(R.id.serviceName);
 
 
-          //Set textView  in separate UI thread to run code outside the main UI thread.
+            //Set textView  in separate UI thread to run code outside the main UI thread.
 
             runOnUiThread(new Runnable() {
                 @Override
@@ -237,7 +231,6 @@ public class MainActivity extends AppCompatActivity {
             });
 
 
-            
             Log.d("TAG", "Resolve Succeeded " + nsdServiceInfo);
 
             if (nsdServiceInfo.getServiceType().equals(SERVICE_TYPE)) {
@@ -245,24 +238,17 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            hostPort= nsdServiceInfo.getPort();
-             String ipAddress = nsdServiceInfo.getHost().getHostAddress();
+            hostPort = nsdServiceInfo.getPort();
+            hostAddress = nsdServiceInfo.getHost();
 
         }
     };
 
-/*
-    public void discoverServices() {
-        if (mDiscoveryListener != null) {
-            try {
-                mNsdManager.stopServiceDiscovery(mDiscoveryListener);
-            } finally {
 
-            }
-            mDiscoveryListener = null;
-        }
-    }
 
+
+
+    /*
     public NsdServiceInfo getChosenServiceInfo() {
         return mService;
     }
