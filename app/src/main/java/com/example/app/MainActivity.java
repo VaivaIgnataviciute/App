@@ -5,24 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.BroadcastReceiver;
 import android.net.nsd.NsdServiceInfo;
-
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-
 import android.net.nsd.NsdManager;
-import android.net.nsd.NsdServiceInfo;
-import android.net.wifi.ScanResult;
-import android.net.wifi.SupplicantState;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
-
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
@@ -31,21 +18,15 @@ import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
-
 import androidx.appcompat.widget.Toolbar;
-
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.List;
+
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private String SERVICE_NAME = "3d print";
-    private String SERVICE_TYPE = "_nvstream_dbd._tcp.";
+    private String SERVICE_TYPE = "_nvstream_dbd._tcp."; // change to normal
 
 
     private InetAddress hostAddress;
@@ -113,8 +94,9 @@ public class MainActivity extends AppCompatActivity {
      public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
          Object serviceObj = adapterView.getItemAtPosition(i);
          NsdServiceInfo selectedService = (NsdServiceInfo)serviceObj;
-         mNsdManager.resolveService(selectedService, mResolveListener);
          mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+         mNsdManager.resolveService(selectedService, mResolveListener);
+
      }
  });
     }
@@ -128,36 +110,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*
 
-    @Override
-
-    protected void  onPause() {
-        if (mNsdManager != null) {
-            mNsdManager.stopServiceDiscovery(mDiscoveryListener);
-        }
-        super.onPause();
-    }
-
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if( mNsdManager != null) {
-            mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
-        }
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        if ( mNsdManager != null) {
-          mNsdManager.stopServiceDiscovery(mDiscoveryListener);
-        }
-        super.onDestroy();
-    }
-    */
 
     NsdManager.DiscoveryListener mDiscoveryListener = new NsdManager.DiscoveryListener() {
         @Override
@@ -199,29 +152,11 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     adapter.notifyDataSetChanged();
-//                    myTextView.setText(nsdServiceInfoName);
-//                    myTextView.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            //Toast.makeText(MainActivity.this, "im printer",Toast.LENGTH_SHORT).show();
-//                            mWebView.loadUrl("http://10.0.0.115");
 //
-//                        }
-//                    });
 
                 }
             });
-//            if (!serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
-//                Log.d("TAG", "Unknown Service Type: " + serviceInfo.getServiceType());
 //
-//
-//            } else if (serviceInfo.getServiceName().equals(SERVICE_NAME)) {
-//                Log.d("TAG", "Same machine " + SERVICE_NAME);
-//
-//            } else {
-//                Log.d("TAG", "Diff Machine : " + serviceInfo.getServiceName());
-//                mNsdManager.resolveService(serviceInfo, mResolveListener);
-//            }
         }
 
         @Override
@@ -253,29 +188,7 @@ public class MainActivity extends AppCompatActivity {
                     mWebView.loadUrl("http://10.0.0.115");
                 }
             });
-//            final String nsdServiceInfoName = nsdServiceInfo.getServiceName();
-//
-//
-//            final TextView myTextView = findViewById(R.id.serviceName);
 
-
-            //Set textView  in separate UI thread to run code outside the main UI thread.
-
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    myTextView.setText(nsdServiceInfoName);
-//                    myTextView.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            //Toast.makeText(MainActivity.this, "im printer",Toast.LENGTH_SHORT).show();
-//                            mWebView.loadUrl("http://10.0.0.115");
-//
-//                        }
-//                    });
-//
-//                }
-//            });
 
 
             Log.d("TAG", "Resolve Succeeded " + nsdServiceInfo);
@@ -293,13 +206,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-    /*
-    public NsdServiceInfo getChosenServiceInfo() {
-        return mService;
-    }
-    */
 
 }
 
