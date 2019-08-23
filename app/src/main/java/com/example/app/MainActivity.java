@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import android.content.BroadcastReceiver;
+import android.content.Intent;
 import android.net.nsd.NsdServiceInfo;
 import android.content.Context;
 import android.net.nsd.NsdManager;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String SERVICE_TYPE = "_nvstream_dbd._tcp."; // change to normal
+    private String SERVICE_TYPE = "_cir3dprinter._tcp."; // change to normal
 
 
     private InetAddress hostAddress;
@@ -44,9 +45,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+
         //Getting toolbar by id
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
 
         services = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, services);
@@ -56,32 +60,6 @@ public class MainActivity extends AppCompatActivity {
 
         //disabling default title text
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        mWebView = findViewById(R.id.activity_main_webview);
-
-        //Enable JavasScript for webView
-
-        WebSettings webSettings = mWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        mWebView.setWebViewClient(new WebViewClient());
-
-        //mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-
-
-        mWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
-        mWebView.getSettings().setLoadWithOverviewMode(true);
-        mWebView.getSettings().setUseWideViewPort(true);
-        mWebView.getSettings().setBuiltInZoomControls(true);
-        mWebView.getSettings().setSupportZoom(true);
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
-
-        if (Build.VERSION.SDK_INT >= 19) {
-            mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        } else {
-            mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
 
 
         //NSD stuff
@@ -94,21 +72,13 @@ public class MainActivity extends AppCompatActivity {
      public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
          Object serviceObj = adapterView.getItemAtPosition(i);
          NsdServiceInfo selectedService = (NsdServiceInfo)serviceObj;
-         mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+         //mNsdManager.stopServiceDiscovery(mDiscoveryListener);
          mNsdManager.resolveService(selectedService, mResolveListener);
 
      }
  });
     }
 
-    @Override
-    public void onBackPressed() {
-        if (mWebView.canGoBack() && mWebView.isFocused()) {
-            mWebView.goBack();
-        } else {
-            super.onBackPressed();
-        }
-    }
 
 
 
@@ -142,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
 //            final TextView myTextView = findViewById(R.id.serviceName);
 
+;
             Log.d("TAG", "Service discovery success : " + serviceInfo);
             Log.d("TAG", "Host = " + serviceInfo.getServiceName());
             Log.d("TAG", "Port = " + serviceInfo.getPort());
@@ -162,18 +133,22 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceLost(NsdServiceInfo nsdServiceInfo) {
             Log.d("TAG", "Service lost " + nsdServiceInfo);
-            services.remove(nsdServiceInfo);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    adapter.notifyDataSetChanged();
-                }
-            });
-            Log.d("TAG", "Xd" + services);
-        }
+            //if (nsdServiceInfo.getServiceName() == "_cir3dprinter._tcp.") {
+                services.remove(nsdServiceInfo);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                Log.d("TAG", "Xd" + services);
+            }
+        //}
     };
 
     NsdManager.ResolveListener mResolveListener = new NsdManager.ResolveListener() {
+
+
         @Override
         public void onResolveFailed(NsdServiceInfo nsdServiceInfo, int errorCode) {
             Log.e("TAG", "Resolved failed " + errorCode);
@@ -182,11 +157,16 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onServiceResolved(NsdServiceInfo nsdServiceInfo) {
+
+
+            Log.d("TAG", "bbz" + nsdServiceInfo);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mWebView.loadUrl("http://10.0.0.115");
-                }
+                    Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
+                    startActivity(intent);
+
+               }
             });
 
 
@@ -198,13 +178,23 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
+
+
             hostPort = nsdServiceInfo.getPort();
             hostAddress = nsdServiceInfo.getHost();
+
 
         }
     };
 
 
+
+    // NsdHelper's tearDown method
+    public void tearDown() {
+
+        mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+
+    }
 
 
 }

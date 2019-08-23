@@ -25,23 +25,7 @@
 
 </ListView>
 
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:id="@+id/serviceName"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textSize="30dp"-->
-        <!--android:paddingTop="20dp"-->
-        <!--android:paddingLeft="15dp"-->
-        <!--android:onClick="onClick"-->
-        <!--android:focusableInTouchMode="false"-->
-        <!--android:clickable="true"-->
-        <!--/>-->
 
-    <WebView
-        android:id="@+id/activity_main_webview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </WebView>
 
 
 
