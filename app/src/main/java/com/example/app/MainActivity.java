@@ -28,6 +28,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private String SERVICE_TYPE = "_cir3dprinter._tcp."; // change to normal
+//    private String SERVICE_TYPE = "_googlecast._tcp.";
 
 
     private InetAddress hostAddress;
@@ -133,15 +134,22 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceLost(NsdServiceInfo nsdServiceInfo) {
             Log.d("TAG", "Service lost " + nsdServiceInfo);
-            //if (nsdServiceInfo.getServiceName() == "_cir3dprinter._tcp.") {
-                services.remove(nsdServiceInfo);
+            NsdServiceInfo serviceToRemove = new NsdServiceInfo();
+            for(NsdServiceInfo currentService : services) {
+                if (currentService.getHost() == nsdServiceInfo.getHost() && currentService.getPort() == currentService.getPort() && currentService.getServiceName() == currentService.getServiceName()) {
+                    serviceToRemove = currentService;
+                }
+            }
+            if (serviceToRemove != null) {
+                services.remove(serviceToRemove);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         adapter.notifyDataSetChanged();
                     }
                 });
-                Log.d("TAG", "Xd" + services);
+            }
+            Log.d("TAG", "Xd" + services);
             }
         //}
     };
@@ -165,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
                     startActivity(intent);
-
                }
             });
 
