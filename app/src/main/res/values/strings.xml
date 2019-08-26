@@ -1,7 +1,5 @@
 <resources>
-    <string name="app_name">App</string>
+    <string name="app_name">CreateITReal</string>
+    <string name="ChoosePrinter">Choose your printer</string>
 
-    <string name="title_activity_intro_">Intro_Activity</string>
-    <string name="allowLocation">To allow device to find devices, turn on your location</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

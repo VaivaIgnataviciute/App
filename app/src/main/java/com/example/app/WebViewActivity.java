@@ -15,14 +15,24 @@ public class WebViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
 
-      mWebView = findViewById(R.id.activity_main_webview);
+        mWebView = findViewById(R.id.activity_main_webview);
 
         //Enable JavasScript for webView
 
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         mWebView.loadUrl("http://10.0.0.115/");
-
+       // mWebView.loadUrl("https://aalborgnu.dk/");
 
     }
+
+   /* @Override
+    public void onBackPressed() {
+
+        if (mWebView.canGoBack()) {
+            mWebView.goBack();
+        } else {
+            super.onBackPressed();
+        }
+    }*/
 }
