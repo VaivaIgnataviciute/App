@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/launcherlogo"
         android:layout_gravity="center"
-        android:paddingTop="180dp"/>
+        android:paddingTop="300dp"/>
 
 
 

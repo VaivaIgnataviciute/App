@@ -37,8 +37,9 @@ public class MainActivity extends AppCompatActivity {
     NsdServiceInfo mService;
     private WebView mWebView;
     ArrayList<NsdServiceInfo> services;
-    ArrayAdapter<NsdServiceInfo> adapter;
-
+   // ArrayAdapter<NsdServiceInfo> adapter;
+private NsdServiceInfoAdapter mAdapter;
+private ListView listView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,9 +55,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         services = new ArrayList<>();
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, services);
+        //adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, services);
+        mAdapter = new NsdServiceInfoAdapter(this, R.id.TextView_serviceName, services);
         ListView listView = findViewById(R.id.ListViewServices);
-        listView.setAdapter(adapter);
+        listView.setAdapter(mAdapter);
 
 
         //disabling default title text
@@ -123,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    adapter.notifyDataSetChanged();
+                    mAdapter.notifyDataSetChanged();
 //
 
                 }
@@ -145,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        adapter.notifyDataSetChanged();
+                        mAdapter.notifyDataSetChanged();
                     }
                 });
             }
