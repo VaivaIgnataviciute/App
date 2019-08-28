@@ -10,7 +10,6 @@ import android.content.Context;
 import android.net.nsd.NsdManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -26,7 +25,7 @@ import java.util.ArrayList;
 
 
 
-public class MainActivity<mService> extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     private String SERVICE_TYPE = "_cir3dprinter._tcp."; // change to normal
 //    private String SERVICE_TYPE = "_googlecast._tcp.";
@@ -36,7 +35,6 @@ public class MainActivity<mService> extends AppCompatActivity {
     private int hostPort;
     private NsdManager mNsdManager;
     NsdServiceInfo mService;
-
     private WebView mWebView;
     ArrayList<NsdServiceInfo> services;
     ArrayAdapter<NsdServiceInfo> adapter;
@@ -53,39 +51,37 @@ public class MainActivity<mService> extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //disabling default title text
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        //NSD stuff
-
-        mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
-        mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
 
 
-      //Creating the arrayList and arrayAdapter to store services
         services = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, services);
         ListView listView = findViewById(R.id.ListViewServices);
         listView.setAdapter(adapter);
 
 
-        //Creating onClick listener for the chosen service and trying to resolve it
+        //disabling default title text
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        //NSD stuff
+
+        mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
+        mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+
+ listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
      @Override
      public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
          Object serviceObj = adapterView.getItemAtPosition(i);
-         NsdServiceInfo selectedService = (NsdServiceInfo) serviceObj;
+         NsdServiceInfo selectedService = (NsdServiceInfo)serviceObj;
          //mNsdManager.stopServiceDiscovery(mDiscoveryListener);
          mNsdManager.resolveService(selectedService, mResolveListener);
 
      }
  });
-
-
     }
 
-    // Each time create new discovery listener for discovery methods onServicefound.
+
+
 
     NsdManager.DiscoveryListener mDiscoveryListener = new NsdManager.DiscoveryListener() {
         @Override
@@ -112,20 +108,18 @@ public class MainActivity<mService> extends AppCompatActivity {
 
         }
 
-        // When service is found add it to the array. Log d is for debugging purposes.
         @Override
         public void onServiceFound(NsdServiceInfo serviceInfo) {
 
 //            final TextView myTextView = findViewById(R.id.serviceName);
 
-
+;
             Log.d("TAG", "Service discovery success : " + serviceInfo);
             Log.d("TAG", "Host = " + serviceInfo.getServiceName());
             Log.d("TAG", "Port = " + serviceInfo.getPort());
             services.add(serviceInfo);
+//            adapter.notifyDataSetChanged();
 
-
-        //Notifying adapter about change in UI thread because it informs view about data change.
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -136,9 +130,6 @@ public class MainActivity<mService> extends AppCompatActivity {
             });
 //
         }
-
-        //When service connection is lost to avoid duplicating we create new serviceToRemove object and check if that object is equals to current service,
-        // if it yes wre remove the service from an array and inform adapter about the change.
 
         @Override
         public void onServiceLost(NsdServiceInfo nsdServiceInfo) {
@@ -162,8 +153,6 @@ public class MainActivity<mService> extends AppCompatActivity {
             }
         //}
     };
-
-    //Creating new Resolve listener each time when user chooses the service. If the connection was made we launch web view activity with the webpage.
 
     NsdManager.ResolveListener mResolveListener = new NsdManager.ResolveListener() {
 
