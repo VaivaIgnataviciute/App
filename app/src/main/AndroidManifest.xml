@@ -20,6 +20,7 @@
         android:required="true" />
 
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/launchernew"
