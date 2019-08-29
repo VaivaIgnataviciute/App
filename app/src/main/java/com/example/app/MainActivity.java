@@ -34,12 +34,9 @@ public class MainActivity extends AppCompatActivity {
     private InetAddress hostAddress;
     private int hostPort;
     private NsdManager mNsdManager;
-    NsdServiceInfo mService;
-    private WebView mWebView;
     ArrayList<NsdServiceInfo> services;
-   // ArrayAdapter<NsdServiceInfo> adapter;
-private NsdServiceInfoAdapter mAdapter;
-private ListView listView;
+    private NsdServiceInfoAdapter mAdapter;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,10 +52,9 @@ private ListView listView;
 
 
         services = new ArrayList<>();
-        //adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, services);
         mAdapter = new NsdServiceInfoAdapter(this, R.id.TextView_serviceName, services);
         ListView listView = findViewById(R.id.ListViewServices);
-        listView.setAdapter(mAdapter);
+        listView.setAdapter(mAdapter); // we add custom adapter to the listview to display data from adapter.
 
 
         //disabling default title text
@@ -81,8 +77,6 @@ private ListView listView;
      }
  });
     }
-
-
 
 
     NsdManager.DiscoveryListener mDiscoveryListener = new NsdManager.DiscoveryListener() {
@@ -113,7 +107,7 @@ private ListView listView;
         @Override
         public void onServiceFound(NsdServiceInfo serviceInfo) {
 
-//            final TextView myTextView = findViewById(R.id.serviceName);
+
 
 ;
             Log.d("TAG", "Service discovery success : " + serviceInfo);

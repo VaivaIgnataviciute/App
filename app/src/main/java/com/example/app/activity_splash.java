@@ -9,9 +9,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+
+//Creating splash screen to display company's logo
+
 public class activity_splash extends AppCompatActivity {
 
-    private static int splashTimeOut=2000;
+    // Setting the time of splash
+    private static int splashTimeOut = 2000;
     private ImageView logo;
 
     @Override
@@ -19,8 +23,11 @@ public class activity_splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        logo=findViewById(R.id.launcher_logo);
 
+        //Referencing  the logo
+        logo = findViewById(R.id.launcher_logo);
+
+        //Automatically launching new activity
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -30,7 +37,8 @@ public class activity_splash extends AppCompatActivity {
             }
         }, splashTimeOut);
 
-        Animation myanim = AnimationUtils.loadAnimation(this,R.anim.mysplashanimation);
+        //Loading animation from animation folder.
+        Animation myanim = AnimationUtils.loadAnimation(this, R.anim.mysplashanimation);
         logo.startAnimation(myanim);
 
     }
