@@ -69,7 +69,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Object serviceObj = adapterView.getItemAtPosition(i);
-                NsdServiceInfo selectedService = (NsdServiceInfo) serviceObj;
+                //NsdServiceInfo selectedService = (NsdServiceInfo) serviceObj;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
+                        startActivity(intent);
+                    }
+                });
+
                 //mNsdManager.stopServiceDiscovery(mDiscoveryListener);
                 //mNsdManager.resolveService(selectedService, mResolveListener);
 
