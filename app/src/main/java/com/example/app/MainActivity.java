@@ -19,10 +19,11 @@ import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
 import androidx.appcompat.widget.Toolbar;
+
 import java.net.InetAddress;
 import java.util.ArrayList;
-
 
 
 public class MainActivity extends AppCompatActivity {
@@ -44,11 +45,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
         //Getting toolbar by id
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
 
         services = new ArrayList<>();
@@ -66,25 +65,46 @@ public class MainActivity extends AppCompatActivity {
         mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
         mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
 
- listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-     @Override
-     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-         Object serviceObj = adapterView.getItemAtPosition(i);
-         NsdServiceInfo selectedService = (NsdServiceInfo)serviceObj;
-         //mNsdManager.stopServiceDiscovery(mDiscoveryListener);
-         mNsdManager.resolveService(selectedService, mResolveListener);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Object serviceObj = adapterView.getItemAtPosition(i);
+                NsdServiceInfo selectedService = (NsdServiceInfo) serviceObj;
+                //mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+                //mNsdManager.resolveService(selectedService, mResolveListener);
 
-     }
- });
+            }
+        });
     }
 
+    public NsdManager.ResolveListener initializeResolveListener() {
+        return new NsdManager.ResolveListener() {
+            @Override
+            public void onResolveFailed(NsdServiceInfo nsdServiceInfo, int errorCode) {
+                Log.e("TAG", "Resolved failed " + errorCode);
+                Log.e("TAG", "Service = " + nsdServiceInfo);
+                mNsdManager.resolveService(nsdServiceInfo, initializeResolveListener());
+            }
+
+            @Override
+            public void onServiceResolved(final NsdServiceInfo nsdServiceInfo) {
+                Log.d("TAG", "Resolve Succeeded " + nsdServiceInfo);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        services.add(nsdServiceInfo);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        };
+    }
 
     NsdManager.DiscoveryListener mDiscoveryListener = new NsdManager.DiscoveryListener() {
         @Override
         public void onStartDiscoveryFailed(String serviceType, int errorCode) {
             Log.e("TAG", "DiscoveryFailed: Error code: " + errorCode);
             mNsdManager.stopServiceDiscovery(this);
-
         }
 
         @Override
@@ -105,50 +125,44 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onServiceFound(NsdServiceInfo serviceInfo) {
-
-
-
-;
+        public void onServiceFound(final NsdServiceInfo serviceInfo) {
             Log.d("TAG", "Service discovery success : " + serviceInfo);
             Log.d("TAG", "Host = " + serviceInfo.getServiceName());
             Log.d("TAG", "Port = " + serviceInfo.getPort());
-            services.add(serviceInfo);
-//            adapter.notifyDataSetChanged();
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mAdapter.notifyDataSetChanged();
-//
-
+            if (!services.contains(serviceInfo)){
+                if (serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
+                        mNsdManager.resolveService(serviceInfo, initializeResolveListener());
                 }
-            });
-//
+            }
         }
 
         @Override
         public void onServiceLost(NsdServiceInfo nsdServiceInfo) {
             Log.d("TAG", "Service lost " + nsdServiceInfo);
             NsdServiceInfo serviceToRemove = new NsdServiceInfo();
-            for(NsdServiceInfo currentService : services) {
+            for (NsdServiceInfo currentService : services) {
                 if (currentService.getHost() == nsdServiceInfo.getHost() && currentService.getPort() == currentService.getPort() && currentService.getServiceName() == currentService.getServiceName()) {
                     serviceToRemove = currentService;
                 }
             }
+            final NsdServiceInfo finalServiceToRemove = serviceToRemove;
             if (serviceToRemove != null) {
-                services.remove(serviceToRemove);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        services.remove(finalServiceToRemove);
                         mAdapter.notifyDataSetChanged();
                     }
                 });
             }
             Log.d("TAG", "Xd" + services);
-            }
-        //}
+        }
+
     };
+
+
+
+    /*
 
     NsdManager.ResolveListener mResolveListener = new NsdManager.ResolveListener() {
 
@@ -198,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
         mNsdManager.stopServiceDiscovery(mDiscoveryListener);
 
     }
+    */
 
 
 }
