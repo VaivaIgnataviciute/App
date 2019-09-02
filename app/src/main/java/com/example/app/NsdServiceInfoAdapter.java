@@ -3,6 +3,7 @@ package com.example.app;
 import android.content.Context;
 import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
+import android.util.Printer;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -54,6 +55,7 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<NsdServiceInfo> {
         //hostAddress = currentService.getHost();
         r.setText("IP: "+ String.valueOf(currentService.getHost()) );
         t.setText("name: " + currentService.getServiceName());
+
 
 
         Log.d("tag", "service name" + currentService.getServiceName());

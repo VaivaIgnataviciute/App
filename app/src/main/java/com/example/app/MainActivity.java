@@ -11,6 +11,7 @@ import android.net.nsd.NsdManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Printer;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
@@ -22,6 +23,14 @@ import android.widget.ListView;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.util.ArrayList;
 
@@ -37,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private NsdManager mNsdManager;
     ArrayList<NsdServiceInfo> services;
     private NsdServiceInfoAdapter mAdapter;
+
 
 
     @Override
@@ -58,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
 
         //disabling default title text
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
+
+
 
 
         //NSD stuff
@@ -83,6 +97,26 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
+
+        RequestQueue queue = Volley.newRequestQueue(this );
+        String url = "http://10.0.0.188/SettingGetPrinterName";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("Model", "Printer mode" + response.toString());
+                String  temp = response.toString().substring(2, response.length()-3);
+                byte array[]  =  temp.getBytes();
+                Log.d("Model", "Printer mode" + temp);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("Model", "Nope ");
+            }
+        }); queue.add(stringRequest);
     }
 
     public NsdManager.ResolveListener initializeResolveListener() {
@@ -134,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onServiceFound(final NsdServiceInfo serviceInfo) {
+
+
             Log.d("TAG", "Service discovery success : " + serviceInfo);
             Log.d("TAG", "Host = " + serviceInfo.getServiceName());
             Log.d("TAG", "Port = " + serviceInfo.getPort());
@@ -221,6 +257,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
     */
+
+
 
 
 }
