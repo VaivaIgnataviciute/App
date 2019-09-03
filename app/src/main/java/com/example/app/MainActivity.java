@@ -10,9 +10,11 @@ import android.content.Context;
 import android.net.nsd.NsdManager;
 import android.os.Build;
 import android.os.Bundle;
+
 import android.util.Log;
-import android.util.Printer;
 import android.view.View;
+
+
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -33,9 +35,10 @@ import com.android.volley.toolbox.Volley;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
+    public class MainActivity extends AppCompatActivity {
 
     private String SERVICE_TYPE = "_cir3dprinter._tcp."; // change to normal
 //    private String SERVICE_TYPE = "_googlecast._tcp.";
@@ -44,9 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private InetAddress hostAddress;
     private int hostPort;
     private NsdManager mNsdManager;
-    ArrayList<NsdServiceInfo> services;
+    ArrayList<PrinterNew> services;
     private NsdServiceInfoAdapter mAdapter;
-
 
 
     @Override
@@ -68,10 +70,6 @@ public class MainActivity extends AppCompatActivity {
 
         //disabling default title text
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-
-
-
 
 
         //NSD stuff
@@ -99,29 +97,40 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-        RequestQueue queue = Volley.newRequestQueue(this );
+        RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://10.0.0.188/SettingGetPrinterName";
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Model", "Printer mode" + response.toString());
-                String  temp = response.toString().substring(2, response.length()-3);
-                byte array[]  =  temp.getBytes();
+                String temp = response.toString().substring(2, response.length() - 3);
+                byte array[] = temp.getBytes();
                 Log.d("Model", "Printer mode" + temp);
+
+                //Assigning printer model to the PrinterNew class , printer model attribute.
+                PrinterNew myPrinterDetails = new PrinterNew();
+                myPrinterDetails.printerModel = temp;
+                Log.d("Model", "zdrv77 " + myPrinterDetails.printerModel);
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("Model", "Nope ");
             }
-        }); queue.add(stringRequest);
+        });
+        queue.add(stringRequest);
     }
+
+
 
     public NsdManager.ResolveListener initializeResolveListener() {
         return new NsdManager.ResolveListener() {
+
             @Override
+
+
             public void onResolveFailed(NsdServiceInfo nsdServiceInfo, int errorCode) {
                 Log.e("TAG", "Resolved failed " + errorCode);
                 Log.e("TAG", "Service = " + nsdServiceInfo);
@@ -129,12 +138,17 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onServiceResolved(final NsdServiceInfo nsdServiceInfo) {
+            public void onServiceResolved( NsdServiceInfo nsdServiceInfo) {
+                final PrinterNew myPrinterDetails = new PrinterNew();
+                myPrinterDetails.printerName = nsdServiceInfo.getServiceName();
+                myPrinterDetails.printerModel = myPrinterDetails.getPrinterModel();
+
                 Log.d("TAG", "Resolve Succeeded " + nsdServiceInfo);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        services.add(nsdServiceInfo);
+                        services.add(myPrinterDetails);
+
                         mAdapter.notifyDataSetChanged();
                     }
                 });
@@ -167,15 +181,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onServiceFound(final NsdServiceInfo serviceInfo) {
+        public void onServiceFound(NsdServiceInfo serviceInfo) {
+
+         
 
 
             Log.d("TAG", "Service discovery success : " + serviceInfo);
             Log.d("TAG", "Host = " + serviceInfo.getServiceName());
             Log.d("TAG", "Port = " + serviceInfo.getPort());
-            if (!services.contains(serviceInfo)){
+            if (!services.contains(serviceInfo)) {
                 if (serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
-                        mNsdManager.resolveService(serviceInfo, initializeResolveListener());
+                    mNsdManager.resolveService(serviceInfo, initializeResolveListener());
                 }
             }
         }
@@ -183,13 +199,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceLost(NsdServiceInfo nsdServiceInfo) {
             Log.d("TAG", "Service lost " + nsdServiceInfo);
-            NsdServiceInfo serviceToRemove = new NsdServiceInfo();
-            for (NsdServiceInfo currentService : services) {
-                if (currentService.getHost() == nsdServiceInfo.getHost() && currentService.getPort() == currentService.getPort() && currentService.getServiceName() == currentService.getServiceName()) {
+            PrinterNew serviceToRemove = new PrinterNew();
+            for (PrinterNew currentService : services) {
+                if (currentService.getPrinterName() == currentService.getPrinterName() && currentService.getPrinterModel() == currentService.getPrinterModel()) {
                     serviceToRemove = currentService;
                 }
             }
-            final NsdServiceInfo finalServiceToRemove = serviceToRemove;
+            final PrinterNew finalServiceToRemove = serviceToRemove;
             if (serviceToRemove != null) {
                 runOnUiThread(new Runnable() {
                     @Override
@@ -257,8 +273,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
     */
-
-
 
 
 }
