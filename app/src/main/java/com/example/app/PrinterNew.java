@@ -1,9 +1,12 @@
 package com.example.app;
 
 
+import android.net.nsd.NsdServiceInfo;
+
 public class PrinterNew {
     String printerName;
     String printerModel;
+    NsdServiceInfo printerService;
     int printerState;
 
 
@@ -36,6 +39,13 @@ public class PrinterNew {
         this.printerState = printerState;
     }
 
+    public void setPrinterService(NsdServiceInfo service) {
+        this.printerService = service;
+    }
+
+    public NsdServiceInfo getPrinterService() {
+        return this.printerService;
+    }
 
 }
 

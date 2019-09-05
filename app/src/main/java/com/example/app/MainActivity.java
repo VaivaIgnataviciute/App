@@ -49,6 +49,7 @@ import java.util.List;
     private NsdManager mNsdManager;
     ArrayList<PrinterNew> services;
     private NsdServiceInfoAdapter mAdapter;
+    public String stringResponse;
 
 
     @Override
@@ -95,35 +96,34 @@ import java.util.List;
 
             }
         });
+    }
 
-
+    public String getPrinterName() {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://10.0.0.188/SettingGetPrinterName";
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+        queue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("Model", "Printer mode" + response.toString());
-                String temp = response.toString().substring(2, response.length() - 3);
-                byte array[] = temp.getBytes();
-                Log.d("Model", "Printer mode" + temp);
+                Log.d("Model", "Printer mode" + response);
+//                String temp = response.substring(2, response.length() - 3);
+//                byte array[] = temp.getBytes();
+//                Log.d("Model", "Printer mode" + temp);
 
                 //Assigning printer model to the PrinterNew class , printer model attribute.
-                PrinterNew myPrinterDetails = new PrinterNew();
-                myPrinterDetails.printerModel = temp;
-                Log.d("Model", "zdrv77 " + myPrinterDetails.printerModel);
-
+//                PrinterNew myPrinterDetails = new PrinterNew();
+//                myPrinterDetails.setPrinterModel(temp);
+//                Log.d("Model", "zdrv77 " + myPrinterDetails.printerModel);
+                stringResponse = response.substring(2, response.length() - 3);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("Model", "Nope ");
             }
-        });
-        queue.add(stringRequest);
+        }));
+        return stringResponse;
     }
-
-
 
     public NsdManager.ResolveListener initializeResolveListener() {
         return new NsdManager.ResolveListener() {
@@ -140,15 +140,14 @@ import java.util.List;
             @Override
             public void onServiceResolved( NsdServiceInfo nsdServiceInfo) {
                 final PrinterNew myPrinterDetails = new PrinterNew();
-                myPrinterDetails.printerName = nsdServiceInfo.getServiceName();
-                myPrinterDetails.printerModel = myPrinterDetails.getPrinterModel();
+                myPrinterDetails.setPrinterName(nsdServiceInfo.getServiceName());
+                myPrinterDetails.setPrinterName(getPrinterModel());
 
                 Log.d("TAG", "Resolve Succeeded " + nsdServiceInfo);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         services.add(myPrinterDetails);
-
                         mAdapter.notifyDataSetChanged();
                     }
                 });
@@ -182,14 +181,22 @@ import java.util.List;
 
         @Override
         public void onServiceFound(NsdServiceInfo serviceInfo) {
-
-         
-
-
+            boolean found = false;
             Log.d("TAG", "Service discovery success : " + serviceInfo);
             Log.d("TAG", "Host = " + serviceInfo.getServiceName());
             Log.d("TAG", "Port = " + serviceInfo.getPort());
-            if (!services.contains(serviceInfo)) {
+//            if (!services.contains(serviceInfo)) {
+//                if (serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
+//                    mNsdManager.resolveService(serviceInfo, initializeResolveListener());
+//                }
+//            }
+            for(PrinterNew printer : services) {
+                if(printer.getPrinterService() == serviceInfo) {
+                    found = true;
+                }
+            }
+
+            if (!found) {
                 if (serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
                     mNsdManager.resolveService(serviceInfo, initializeResolveListener());
                 }
