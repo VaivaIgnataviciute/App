@@ -49,7 +49,6 @@ import java.util.List;
     private NsdManager mNsdManager;
     ArrayList<PrinterNew> services;
     private NsdServiceInfoAdapter mAdapter;
-    public String stringResponse;
 
 
     @Override
@@ -98,42 +97,6 @@ import java.util.List;
         });
     }
 
-    public String getPrinterName(String url) {
-        RequestQueue queue = Volley.newRequestQueue(this);
-
-
-        queue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d("Model", "Printer mode" + response);
-//                String temp = response.substring(2, response.length() - 3);
-//                byte array[] = temp.getBytes();
-//                Log.d("Model", "Printer mode" + temp);
-
-                //Assigning printer model to the PrinterNew class , printer model attribute.
-
-
-
-//                Log.d("Model", "zdrv77 " + myPrinterDetails.printerModel);
-                stringResponse = response.substring(2, response.length() - 3);
-                PrinterNew myPrinterDetails = new PrinterNew();
-                 myPrinterDetails.setPrinterModel(stringResponse);
-
-
-
-
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("Model", "Nope ");
-            }
-        }));
-        return stringResponse;
-
-    }
-
     public NsdManager.ResolveListener initializeResolveListener() {
         return new NsdManager.ResolveListener() {
 
@@ -148,31 +111,35 @@ import java.util.List;
 
 
             @Override
-            public void onServiceResolved( NsdServiceInfo nsdServiceInfo) {
+            public void onServiceResolved(final NsdServiceInfo nsdServiceInfo) {
                 final PrinterNew myPrinterDetails = new PrinterNew();
                 myPrinterDetails.setPrinterName(nsdServiceInfo.getServiceName());
-
-
-               // myPrinterDetails.setPrinterModel(nsdServiceInfo.());
-                getPrinterName("http://10.0.0.115/SettingGetPrinterName");
-                myPrinterDetails.getPrinterModel();
-                Log.d("TAG", "Printer mode on resolved " + getPrinterName("http://10.0.0.115/SettingGetPrinterName"));
-                Log.d("TAG", "labas " + myPrinterDetails.getPrinterModel());
-
-
-
-
-                Log.d("TAG", "Resolve Succeeded " + nsdServiceInfo);
-                runOnUiThread(new Runnable() {
+                Log.d("Model", "BLT" + nsdServiceInfo.getHost());
+                myPrinterDetails.setPrinterModel("http:/" + nsdServiceInfo.getHost() + "/SettingGetPrinterName", MainActivity.this, new PrinterNew.VolleyCallback() {
                     @Override
-                    public void run() {
-                        services.add(myPrinterDetails);
-                        mAdapter.notifyDataSetChanged();
+                    public void onSuccess(String result) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("TAG", "Resolve Succeeded " + nsdServiceInfo);
+                                services.add(myPrinterDetails);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Object response) {
+                        Log.d("Model", "LOL KATIK SUSIPISAU :DDDDDD");
+                        return;
                     }
                 });
+               // myPrinterDetails.setPrinterModel(nsdServiceInfo.());
+//                getPrinterName("http://10.0.0.115/SettingGetPrinterName");
+//                myPrinterDetails.getPrinterModel();
+//                Log.d("TAG", "Printer mode on resolved " + getPrinterName("http://10.0.0.115/SettingGetPrinterName"));
+                Log.d("TAG", "labas " + myPrinterDetails.getPrinterModel());
             }
-
-
         };
     }
 
