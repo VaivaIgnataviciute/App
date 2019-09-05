@@ -59,7 +59,7 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
         t.setText("name: " + currentService.getPrinterName());
 
 
-        Log.d("tag", "model" + currentService.getPrinterModel());
+        Log.d("bybis", "model" + String.valueOf(currentService.getPrinterModel()));
         Log.d("hello2", String.valueOf(currentService.getPrinterName()));
 
 

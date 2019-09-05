@@ -98,9 +98,9 @@ import java.util.List;
         });
     }
 
-    public String getPrinterName() {
+    public String getPrinterName(String url) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://10.0.0.188/SettingGetPrinterName";
+
 
         queue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -111,10 +111,18 @@ import java.util.List;
 //                Log.d("Model", "Printer mode" + temp);
 
                 //Assigning printer model to the PrinterNew class , printer model attribute.
-//                PrinterNew myPrinterDetails = new PrinterNew();
-//                myPrinterDetails.setPrinterModel(temp);
+
+
+
 //                Log.d("Model", "zdrv77 " + myPrinterDetails.printerModel);
                 stringResponse = response.substring(2, response.length() - 3);
+                PrinterNew myPrinterDetails = new PrinterNew();
+                 myPrinterDetails.setPrinterModel(stringResponse);
+
+
+
+
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -123,6 +131,7 @@ import java.util.List;
             }
         }));
         return stringResponse;
+
     }
 
     public NsdManager.ResolveListener initializeResolveListener() {
@@ -137,11 +146,21 @@ import java.util.List;
                 mNsdManager.resolveService(nsdServiceInfo, initializeResolveListener());
             }
 
+
             @Override
             public void onServiceResolved( NsdServiceInfo nsdServiceInfo) {
                 final PrinterNew myPrinterDetails = new PrinterNew();
                 myPrinterDetails.setPrinterName(nsdServiceInfo.getServiceName());
-                myPrinterDetails.setPrinterName(getPrinterModel());
+
+
+               // myPrinterDetails.setPrinterModel(nsdServiceInfo.());
+                getPrinterName("http://10.0.0.115/SettingGetPrinterName");
+                myPrinterDetails.getPrinterModel();
+                Log.d("TAG", "Printer mode on resolved " + getPrinterName("http://10.0.0.115/SettingGetPrinterName"));
+                Log.d("TAG", "labas " + myPrinterDetails.getPrinterModel());
+
+
+
 
                 Log.d("TAG", "Resolve Succeeded " + nsdServiceInfo);
                 runOnUiThread(new Runnable() {
@@ -152,6 +171,8 @@ import java.util.List;
                     }
                 });
             }
+
+
         };
     }
 

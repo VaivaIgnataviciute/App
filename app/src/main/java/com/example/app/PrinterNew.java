@@ -28,7 +28,7 @@ public class PrinterNew {
     }
 
     public void setPrinterModel(String printerModel) {
-        this.printerName = printerModel;
+        this.printerModel = printerModel;
     }
 
     public int getPrinterState() {
