@@ -12,17 +12,57 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.io.UnsupportedEncodingException;
+
 public class PrinterNew {
     String printerName;
     String printerModel;
     NsdServiceInfo printerService;
-    int printerState;
+    String printInformation;
+    String menuInformation;
+    int state = 0;
+    int currentMenu = 0;
+    printerState_t printerState;
+
+    public enum printerState_t {
+        Idle(-1),
+        Printing(2),
+        Transfering (0),
+        Heating (1),
+        Pausing (3),
+        Paused (4),
+        Cancelling (5),
+        Finished (6);
+
+        public int numVal;
+
+        printerState_t(int numVal) {
+            this.numVal = numVal;
+        }
+
+        public int getNumVal() {
+            return numVal;
+        }
+    }
+
+    public enum menuState {
+        mainMenu(0);
+
+        public int numVal;
+
+        menuState(int numVal) {
+            this.numVal = numVal;
+        }
+
+        public int getNumVal() {
+            return  numVal;
+        }
+    }
 
 
     public PrinterNew() {
 
     }
-
 
     public String getPrinterName() {
         return printerName;
@@ -36,17 +76,99 @@ public class PrinterNew {
         return printerModel;
     }
 
-//    public void setPrinterModel(String printerModel) {
-//        this.printerModel = printerModel;
-//    }
-
-    public int getPrinterState() {
-        return this.printerState;
+    public String getPrinterInformation() {
+        return this.printInformation;
     }
 
-    public void setPrinterState(int printerState) {
-        this.printerState = printerState;
+    public void setPrinterInformation(String url, Context context, final VolleyCallback callback) {
+        Log.d("Model", "Currently calling URL " + url);
+        RequestQueue queue = Volley.newRequestQueue(context);
+        queue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String temp = response.substring(2, response.length() - 2);
+                byte msgArray[];
+                try {
+                    msgArray = temp.getBytes("ISO-8859-1");
+                    state = msgArray[0];
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+//                if( state == printerState_t.Idle.getNumVal() && state == menuState.mainMenu.getNumVal()) {
+//                    Log.d("AAAAAA", "Printer is idle");
+//                } else if( state == printerState_t.Printing.getNumVal() ||  state == printerState_t.Transfering.getNumVal()||
+//                state == printerState_t.Heating.getNumVal() || state == printerState_t.Pausing.getNumVal()||
+//                state == printerState_t.Paused.getNumVal() || state == printerState_t.Cancelling.getNumVal() ||
+//                state == printerState_t.Finished.getNumVal()) {
+//                    Log.d("AAAAAA", "printer is busy  ");
+//
+//                }
+
+
+                printInformation  = response;
+                callback.onSuccess(printInformation);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("State", "Nope ");
+                callback.onFailure(error);
+            }
+        }));
     }
+
+    public String getMenuInformation () {
+        return menuInformation;
+    }
+
+    public void setMenuInformation (String url, Context context, final  VolleyCallback callback) {
+        Log.d("Model", "Currently calling URL " + url);
+
+        RequestQueue queue = Volley.newRequestQueue(context);
+        queue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("Current menu", "Current menu" + response);
+
+
+                String temp = response.substring(2, response.length() - 2);
+                byte msgArray[];
+                try {
+                    msgArray = temp.getBytes("ISO-8859-1");
+                    currentMenu = msgArray[0];
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+
+
+                menuInformation = response;
+                callback.onSuccess(menuInformation);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("Model", "Nope ");
+                callback.onFailure(error);
+            }
+        }));
+    }
+
+    public boolean isIdle() {
+        if (state == -1 && currentMenu == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
+
+
 
     public void setPrinterService(NsdServiceInfo service) {
         this.printerService = service;
@@ -55,6 +177,8 @@ public class PrinterNew {
     public NsdServiceInfo getPrinterService() {
         return this.printerService;
     }
+
+
 
     public interface VolleyCallback {
         void onSuccess(String result);

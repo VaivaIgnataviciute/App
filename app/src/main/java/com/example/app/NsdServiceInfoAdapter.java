@@ -55,7 +55,7 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
         TextView t = listItem.findViewById(R.id.TextView_serviceName);
         TextView r = listItem.findViewById(R.id.TextView_serviceIP);
         //hostAddress = currentService.getHost();
-        r.setText("IP: " + currentService.getPrinterModel());
+        r.setText("model: " + currentService.getPrinterModel());
         t.setText("name: " + currentService.getPrinterName());
 
 

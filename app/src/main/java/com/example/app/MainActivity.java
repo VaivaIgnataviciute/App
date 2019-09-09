@@ -134,10 +134,43 @@ import java.util.List;
                         return;
                     }
                 });
-               // myPrinterDetails.setPrinterModel(nsdServiceInfo.());
-//                getPrinterName("http://10.0.0.115/SettingGetPrinterName");
-//                myPrinterDetails.getPrinterModel();
-//                Log.d("TAG", "Printer mode on resolved " + getPrinterName("http://10.0.0.115/SettingGetPrinterName"));
+
+                myPrinterDetails.setPrinterInformation("http:/" + nsdServiceInfo.getHost() + "/PrintGetInformation", MainActivity.this, new PrinterNew.VolleyCallback() {
+                    @Override
+                    public void onSuccess(String result) {
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                Log.d("TAG", "Resolve Succeeded2 " + nsdServiceInfo);
+//                                services.add(myPrinterDetails);
+//                                mAdapter.notifyDataSetChanged();
+//                            }
+//                        });
+
+                        Log.d("TAG", "Prijunge " + myPrinterDetails.getPrinterInformation());
+                    }
+
+                    @Override
+                    public void onFailure(Object response) {
+                        Log.d("Model", "LOL KATIK SUSIPISAU :DDDDDD");
+                        return;
+
+                    }
+                });
+
+                myPrinterDetails.setMenuInformation("http:/" + nsdServiceInfo.getHost() + "/getCurrentMenu", MainActivity.this, new PrinterNew.VolleyCallback() {
+                    @Override
+                    public void onSuccess(String result) {
+                        Log.d("TAG", "CurrentMenu " + myPrinterDetails.getMenuInformation());
+                    }
+
+                    @Override
+                    public void onFailure(Object response) {
+                        Log.d("Model", "LOL KATIK SUSIPISAU :DDDDDD");
+                        return;
+                    }
+                });
+
                 Log.d("TAG", "labas " + myPrinterDetails.getPrinterModel());
             }
         };
@@ -216,58 +249,6 @@ import java.util.List;
     };
 
 
-
-    /*
-
-    NsdManager.ResolveListener mResolveListener = new NsdManager.ResolveListener() {
-
-
-        @Override
-        public void onResolveFailed(NsdServiceInfo nsdServiceInfo, int errorCode) {
-            Log.e("TAG", "Resolved failed " + errorCode);
-            Log.e("TAG", "Service = " + nsdServiceInfo);
-        }
-
-        @Override
-        public void onServiceResolved(NsdServiceInfo nsdServiceInfo) {
-
-
-            Log.d("TAG", "bbz" + nsdServiceInfo);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
-                    startActivity(intent);
-               }
-            });
-
-
-
-            Log.d("TAG", "Resolve Succeeded " + nsdServiceInfo);
-
-            if (nsdServiceInfo.getServiceType().equals(SERVICE_TYPE)) {
-                Log.d("TAG", "Same IP");
-                return;
-            }
-
-
-
-            hostPort = nsdServiceInfo.getPort();
-            hostAddress = nsdServiceInfo.getHost();
-
-
-        }
-    };
-
-
-
-    // NsdHelper's tearDown method
-    public void tearDown() {
-
-        mNsdManager.stopServiceDiscovery(mDiscoveryListener);
-
-    }
-    */
 
 
 }
