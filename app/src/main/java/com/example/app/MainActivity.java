@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-    public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     private String SERVICE_TYPE = "_cir3dprinter._tcp."; // change to normal
 //    private String SERVICE_TYPE = "_googlecast._tcp.";
@@ -114,14 +114,14 @@ import java.util.List;
             public void onServiceResolved(final NsdServiceInfo nsdServiceInfo) {
                 final PrinterNew myPrinterDetails = new PrinterNew();
                 myPrinterDetails.setPrinterName(nsdServiceInfo.getServiceName());
-                Log.d("Model", "BLT" + nsdServiceInfo.getHost());
+                Log.d("NSD", "Hostas" + nsdServiceInfo.getHost());
                 myPrinterDetails.setPrinterModel("http:/" + nsdServiceInfo.getHost() + "/SettingGetPrinterName", MainActivity.this, new PrinterNew.VolleyCallback() {
                     @Override
                     public void onSuccess(String result) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Log.d("TAG", "Resolve Succeeded " + nsdServiceInfo);
+                                Log.d("NSD", "Print model Resolve Succeeded" + nsdServiceInfo);
                                 services.add(myPrinterDetails);
                                 mAdapter.notifyDataSetChanged();
                             }
@@ -130,7 +130,7 @@ import java.util.List;
 
                     @Override
                     public void onFailure(Object response) {
-                        Log.d("Model", "LOL KATIK SUSIPISAU :DDDDDD");
+                        Log.d("NSD", "Print model response failed");
                         return;
                     }
                 });
@@ -138,40 +138,48 @@ import java.util.List;
                 myPrinterDetails.setPrinterInformation("http:/" + nsdServiceInfo.getHost() + "/PrintGetInformation", MainActivity.this, new PrinterNew.VolleyCallback() {
                     @Override
                     public void onSuccess(String result) {
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                Log.d("TAG", "Resolve Succeeded2 " + nsdServiceInfo);
-//                                services.add(myPrinterDetails);
-//                                mAdapter.notifyDataSetChanged();
-//                            }
-//                        });
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("NSD", "Print information Resolve Succeeded " + nsdServiceInfo);
+                                services.add(myPrinterDetails);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        });
 
-                        Log.d("TAG", "Prijunge " + myPrinterDetails.getPrinterInformation());
+                        Log.d("API", "Print information " + myPrinterDetails.getPrinterInformation());
                     }
 
                     @Override
                     public void onFailure(Object response) {
-                        Log.d("Model", "LOL KATIK SUSIPISAU :DDDDDD");
+                        Log.d("NSD", "Print status response failed");
                         return;
 
                     }
                 });
 
-                myPrinterDetails.setMenuInformation("http:/" + nsdServiceInfo.getHost() + "/getCurrentMenu", MainActivity.this, new PrinterNew.VolleyCallback() {
+                myPrinterDetails.setMenuInformation("http:/" + nsdServiceInfo.getHost() + "/GetCurrentMenu", MainActivity.this, new PrinterNew.VolleyCallback() {
                     @Override
                     public void onSuccess(String result) {
-                        Log.d("TAG", "CurrentMenu " + myPrinterDetails.getMenuInformation());
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("NSD", "Current menu  Resolve Succeeded " + nsdServiceInfo);
+                                services.add(myPrinterDetails);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        });
+                        Log.d("NSD", "CurrentMenu " + myPrinterDetails.getMenuInformation());
                     }
 
                     @Override
                     public void onFailure(Object response) {
-                        Log.d("Model", "LOL KATIK SUSIPISAU :DDDDDD");
+                        Log.d("NSD", "Current menu response failed");
                         return;
                     }
                 });
 
-                Log.d("TAG", "labas " + myPrinterDetails.getPrinterModel());
             }
         };
     }
@@ -179,40 +187,40 @@ import java.util.List;
     NsdManager.DiscoveryListener mDiscoveryListener = new NsdManager.DiscoveryListener() {
         @Override
         public void onStartDiscoveryFailed(String serviceType, int errorCode) {
-            Log.e("TAG", "DiscoveryFailed: Error code: " + errorCode);
+            Log.e("NSD", "DiscoveryFailed: Error code: " + errorCode);
             mNsdManager.stopServiceDiscovery(this);
         }
 
         @Override
         public void onStopDiscoveryFailed(String serviceType, int errorCode) {
-            Log.e("TAG", "Discovery failed : Error code: " + errorCode);
+            Log.e("NSD", "Discovery failed : Error code: " + errorCode);
         }
 
         @Override
         public void onDiscoveryStarted(String regType) {
-            Log.d("TAG", "Service discovery started");
+            Log.d("NSD", "Service discovery started");
 
         }
 
         @Override
         public void onDiscoveryStopped(String serviceType) {
-            Log.i("TAG", "Discovery stopped: " + serviceType);
+            Log.i("NSD", "Discovery stopped: " + serviceType);
 
         }
 
         @Override
         public void onServiceFound(NsdServiceInfo serviceInfo) {
             boolean found = false;
-            Log.d("TAG", "Service discovery success : " + serviceInfo);
-            Log.d("TAG", "Host = " + serviceInfo.getServiceName());
-            Log.d("TAG", "Port = " + serviceInfo.getPort());
+            Log.d("NSD", "Service discovery success : " + serviceInfo);
+            Log.d("NSD", "Host = " + serviceInfo.getServiceName());
+            Log.d("NSD", "Port = " + serviceInfo.getPort());
 //            if (!services.contains(serviceInfo)) {
 //                if (serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
 //                    mNsdManager.resolveService(serviceInfo, initializeResolveListener());
 //                }
 //            }
-            for(PrinterNew printer : services) {
-                if(printer.getPrinterService() == serviceInfo) {
+            for (PrinterNew printer : services) {
+                if (printer.getPrinterService() == serviceInfo) {
                     found = true;
                 }
             }
@@ -226,7 +234,7 @@ import java.util.List;
 
         @Override
         public void onServiceLost(NsdServiceInfo nsdServiceInfo) {
-            Log.d("TAG", "Service lost " + nsdServiceInfo);
+            Log.d("NSD", "Service lost " + nsdServiceInfo);
             PrinterNew serviceToRemove = new PrinterNew();
             for (PrinterNew currentService : services) {
                 if (currentService.getPrinterName() == currentService.getPrinterName() && currentService.getPrinterModel() == currentService.getPrinterModel()) {
@@ -243,12 +251,10 @@ import java.util.List;
                     }
                 });
             }
-            Log.d("TAG", "Xd" + services);
+//            Log.d("NSD", "Xd" + services);
         }
 
     };
-
-
 
 
 }
