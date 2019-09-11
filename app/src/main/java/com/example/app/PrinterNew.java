@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
 import android.widget.ImageView;
+import android.os.Handler;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -13,7 +14,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+
 import java.io.UnsupportedEncodingException;
+import java.util.Timer;
 
 public class PrinterNew {
     String printerName;
@@ -99,15 +102,6 @@ public class PrinterNew {
                     e.printStackTrace();
                 }
 
-//                if( state == printerState_t.Idle.getNumVal() && state == menuState.mainMenu.getNumVal()) {
-//                    Log.d("AAAAAA", "Printer is idle");
-//                } else if( state == printerState_t.Printing.getNumVal() ||  state == printerState_t.Transfering.getNumVal()||
-//                state == printerState_t.Heating.getNumVal() || state == printerState_t.Pausing.getNumVal()||
-//                state == printerState_t.Paused.getNumVal() || state == printerState_t.Cancelling.getNumVal() ||
-//                state == printerState_t.Finished.getNumVal()) {
-//                    Log.d("AAAAAA", "printer is busy  ");
-//
-//                }
 
                 printInformation = response;
                 callback.onSuccess(printInformation);
@@ -159,6 +153,7 @@ public class PrinterNew {
         }));
     }
 
+
     public boolean isIdle() {
         if (state == -1 && currentMenu == 0) {
             return true;
@@ -166,8 +161,6 @@ public class PrinterNew {
             return false;
         }
     }
-
-
 
 
     public void setPrinterService(NsdServiceInfo service) {

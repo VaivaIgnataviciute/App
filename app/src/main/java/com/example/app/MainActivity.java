@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.nsd.NsdServiceInfo;
 import android.content.Context;
 import android.net.nsd.NsdManager;
@@ -13,6 +14,8 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.view.View;
+import  java.util.TimerTask;
+import java.util.Timer;
 
 
 import android.view.WindowManager;
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private NsdManager mNsdManager;
     ArrayList<PrinterNew> services;
     private NsdServiceInfoAdapter mAdapter;
+    private Timer myTimer;
 
 
     @Override
@@ -66,6 +70,24 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new NsdServiceInfoAdapter(this, R.id.TextView_serviceName, services);
         ListView listView = findViewById(R.id.ListViewServices);
         listView.setAdapter(mAdapter); // we add custom adapter to the listview to display data from adapter.
+
+
+//        myTimer = new Timer();
+//        myTimer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                PrinterNew printerNew = new PrinterNew();
+//                                printerNew.isIdle();
+//                            }
+//                        });
+//                            }
+//
+//                            },0,200000);
+
+
 
 
         //disabling default title text
@@ -97,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     public NsdManager.ResolveListener initializeResolveListener() {
         return new NsdManager.ResolveListener() {
 
@@ -123,9 +146,9 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 Log.d("NSD", "Print model Resolve Succeeded" + nsdServiceInfo);
                                 services.add(myPrinterDetails);
+
                                 mAdapter.notifyDataSetChanged();
-                            }
-                        });
+                            }});
                     }
 
                     @Override
@@ -144,8 +167,21 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d("NSD", "Print information Resolve Succeeded " + nsdServiceInfo);
                                 services.add(myPrinterDetails);
                                 mAdapter.notifyDataSetChanged();
+
                             }
                         });
+
+//                        new Timer().schedule(new TimerTask() {
+//                            @Override
+//                            public void run() {
+//                                runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        mAdapter.notifyDataSetChanged();
+//                                    }
+//                                });
+//                            }
+//                        },0,2000);
 
                         Log.d("API", "Print information " + myPrinterDetails.getPrinterInformation());
                     }
@@ -168,9 +204,22 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d("NSD", "Current menu  Resolve Succeeded " + nsdServiceInfo);
                                 services.add(myPrinterDetails);
                                 mAdapter.notifyDataSetChanged();
+
                             }
                         });
                         Log.d("NSD", "CurrentMenu " + myPrinterDetails.getMenuInformation());
+//                        new Timer().schedule(new TimerTask() {
+//                            @Override
+//                            public void run() {
+//                                runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        mAdapter.notifyDataSetChanged();
+//                                    }
+//                                });
+//                            }
+//                        },0,20000);
+
                     }
 
                     @Override
@@ -237,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("NSD", "Service lost " + nsdServiceInfo);
             PrinterNew serviceToRemove = new PrinterNew();
             for (PrinterNew currentService : services) {
-                if (currentService.getPrinterName() == currentService.getPrinterName() && currentService.getPrinterModel() == currentService.getPrinterModel()) {
+                if (currentService.getPrinterName() ==  currentService.getPrinterName() && currentService.getPrinterModel() == currentService.getPrinterModel()) {
                     serviceToRemove = currentService;
                 }
             }
@@ -255,6 +304,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
     };
+
+
+
 
 
 }

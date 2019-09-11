@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Handler;
 
 
 //Creating new custom NsdServiceInfoAdapter which extends ArrayAdapter
@@ -30,7 +31,6 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
     private Context mContext;
     private List<PrinterNew> services;
     private InetAddress hostAddress;
-
 
 
     //Creating new constructor with parameters such as this class(context), layout id (list item layout Id) and data model.
@@ -54,26 +54,42 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
             listItem = LayoutInflater.from(mContext).inflate(R.layout.list_item, parent, false);
 
         //Getting data's position in the data set.
-        PrinterNew currentService = services.get(position);
-
+         PrinterNew currentService = services.get(position);
 
 
         //We asign the the view to the item layout as a TextView
         ImageView i = listItem.findViewById(R.id.status_circle);
         TextView t = listItem.findViewById(R.id.TextView_serviceName);
-        TextView r = listItem.findViewById(R.id.TextView_serviceIP);
+        final TextView r = listItem.findViewById(R.id.TextView_serviceIP);
         //hostAddress = currentService.getHost();
         r.setText(currentService.getPrinterModel());
         t.setText(currentService.getPrinterName());
 
 
 
-       if (currentService.isIdle()) {
-           i.setColorFilter(Color.rgb(42,187,155));
-       }
-       else {
-           i.setColorFilter(Color.rgb(240,52,52));
-       }
+
+            if (currentService.isIdle()) {
+                i.setColorFilter(Color.rgb(42, 187, 155));
+            } else {
+                i.setColorFilter(Color.rgb(240, 52, 52));
+            }
+
+
+//
+//
+//
+//new Timer().schedule(new TimerTask() {
+//    @Override
+//    public void run() {
+//        if (currentService.isIdle()) {
+//            i.setColorFilter(Color.rgb(42, 187, 155));
+//        } else {
+//            i.setColorFilter(Color.rgb(240, 52, 52));
+//        }
+//
+//
+//    }
+//},0,2000);
 
 
         Log.d("bybis", "model" + String.valueOf(currentService.getPrinterModel()));
