@@ -66,8 +66,6 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
         t.setText(currentService.getPrinterName());
 
 
-
-
             if (currentService.isIdle()) {
                 i.setColorFilter(Color.rgb(42, 187, 155));
             } else {

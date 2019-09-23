@@ -52,14 +52,13 @@ public class MainActivity extends AppCompatActivity {
     private NsdManager mNsdManager;
     ArrayList<PrinterNew> services;
     private NsdServiceInfoAdapter mAdapter;
-    private Timer myTimer;
+    private Timer myTimer = new Timer();
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         //Getting toolbar by id
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -158,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                myPrinterDetails.setPrinterInformation("http:/" + nsdServiceInfo.getHost() + "/PrintGetInformation", MainActivity.this, new PrinterNew.VolleyCallback() {
+                myPrinterDetails.setPrinterInformation("http://" + nsdServiceInfo.getHost() + "/PrintGetInformation", MainActivity.this, new PrinterNew.VolleyCallback() {
                     @Override
                     public void onSuccess(String result) {
                         runOnUiThread(new Runnable() {
@@ -171,6 +170,34 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
 
+
+                        myTimer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        myPrinterDetails.setMenuInformation("http://" + nsdServiceInfo.getHost() + "/PrintGetInformation", MainActivity.this, new PrinterNew.VolleyCallback() {
+                                            @Override
+                                            public void onSuccess(String result) {
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        Log.d("NSD", "Current menu  Resolve Succeeded " + nsdServiceInfo);
+                                                        mAdapter.notifyDataSetChanged();
+                                                    }
+                                                });
+                                            }
+
+                                            @Override
+                                            public void onFailure(Object response) {
+                                                Log.d("NSD", "Current menu response failed");
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        },0,2000);
 //                        new Timer().schedule(new TimerTask() {
 //                            @Override
 //                            public void run() {
@@ -194,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                myPrinterDetails.setMenuInformation("http:/" + nsdServiceInfo.getHost() + "/GetCurrentMenu", MainActivity.this, new PrinterNew.VolleyCallback() {
+                myPrinterDetails.setMenuInformation("http://" + nsdServiceInfo.getHost() + "/GetCurrentMenu", MainActivity.this, new PrinterNew.VolleyCallback() {
                     @Override
                     public void onSuccess(String result) {
 
@@ -208,17 +235,34 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                         Log.d("NSD", "CurrentMenu " + myPrinterDetails.getMenuInformation());
-//                        new Timer().schedule(new TimerTask() {
-//                            @Override
-//                            public void run() {
-//                                runOnUiThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        mAdapter.notifyDataSetChanged();
-//                                    }
-//                                });
-//                            }
-//                        },0,20000);
+
+                        myTimer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        myPrinterDetails.setMenuInformation("http://" + nsdServiceInfo.getHost() + "/GetCurrentMenu", MainActivity.this, new PrinterNew.VolleyCallback() {
+                                            @Override
+                                            public void onSuccess(String result) {
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        Log.d("NSD", "Current menu  Resolve Succeeded " + nsdServiceInfo);
+                                                        mAdapter.notifyDataSetChanged();
+                                                    }
+                                                });
+                                            }
+
+                                            @Override
+                                            public void onFailure(Object response) {
+                                                Log.d("NSD", "Current menu response failed");
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        },0,2000);
 
                     }
 

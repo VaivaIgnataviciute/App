@@ -70,6 +70,14 @@ public class PrinterNew {
 
     }
 
+    public void setPrinterState(int state) {
+        this.state = state;
+    }
+
+    public void setPrinterMenuInformation(int state) {
+        this.currentMenu = state;
+    }
+
     public String getPrinterName() {
         return printerName;
     }
