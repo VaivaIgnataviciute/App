@@ -28,42 +28,6 @@ public class PrinterNew {
     int currentMenu = 0;
 
 
-    //printerState_t printerState;
-
-//    public enum printerState_t {
-//        Idle(-1),
-//        Printing(2),
-//        Transfering (0),
-//        Heating (1),
-//        Pausing (3),
-//        Paused (4),
-//        Cancelling (5),
-//        Finished (6);
-//
-//        public int numVal;
-//
-//        printerState_t(int numVal) {
-//            this.numVal = numVal;
-//        }
-//
-//        public int getNumVal() {
-//            return numVal;
-//        }
-//    }
-//
-//    public enum menuState {
-//        mainMenu(0);
-//
-//        public int numVal;
-//
-//        menuState(int numVal) {
-//            this.numVal = numVal;
-//        }
-//
-//        public int getNumVal() {
-//            return  numVal;
-//        }
-//    }
 
 
     public PrinterNew() {

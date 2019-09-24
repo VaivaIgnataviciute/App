@@ -73,21 +73,7 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
             }
 
 
-//
-//
-//
-//new Timer().schedule(new TimerTask() {
-//    @Override
-//    public void run() {
-//        if (currentService.isIdle()) {
-//            i.setColorFilter(Color.rgb(42, 187, 155));
-//        } else {
-//            i.setColorFilter(Color.rgb(240, 52, 52));
-//        }
-//
-//
-//    }
-//},0,2000);
+
 
 
         Log.d("bybis", "model" + String.valueOf(currentService.getPrinterModel()));

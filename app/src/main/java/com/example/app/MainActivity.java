@@ -14,7 +14,8 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.view.View;
-import  java.util.TimerTask;
+
+import java.util.TimerTask;
 import java.util.Timer;
 
 
@@ -71,24 +72,6 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(mAdapter); // we add custom adapter to the listview to display data from adapter.
 
 
-//        myTimer = new Timer();
-//        myTimer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                PrinterNew printerNew = new PrinterNew();
-//                                printerNew.isIdle();
-//                            }
-//                        });
-//                            }
-//
-//                            },0,200000);
-
-
-
-
         //disabling default title text
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -137,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 final PrinterNew myPrinterDetails = new PrinterNew();
                 myPrinterDetails.setPrinterName(nsdServiceInfo.getServiceName());
                 Log.d("NSD", "Hostas" + nsdServiceInfo.getHost());
-                myPrinterDetails.setPrinterModel("http:/" + nsdServiceInfo.getHost() + "/SettingGetPrinterName", MainActivity.this, new PrinterNew.VolleyCallback() {
+                myPrinterDetails.setPrinterModel("http://" + nsdServiceInfo.getHost() + "/SettingGetPrinterName", MainActivity.this, new PrinterNew.VolleyCallback() {
                     @Override
                     public void onSuccess(String result) {
                         runOnUiThread(new Runnable() {
@@ -147,7 +130,8 @@ public class MainActivity extends AppCompatActivity {
                                 services.add(myPrinterDetails);
 
                                 mAdapter.notifyDataSetChanged();
-                            }});
+                            }
+                        });
                     }
 
                     @Override
@@ -163,8 +147,8 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Log.d("NSD", "Print information Resolve Succeeded " + nsdServiceInfo);
-                                services.add(myPrinterDetails);
+                                Log.d("NSD", "Print information response succeded and added to array " + nsdServiceInfo);
+                                //services.add(myPrinterDetails);
                                 mAdapter.notifyDataSetChanged();
 
                             }
@@ -180,35 +164,22 @@ public class MainActivity extends AppCompatActivity {
                                         myPrinterDetails.setMenuInformation("http://" + nsdServiceInfo.getHost() + "/PrintGetInformation", MainActivity.this, new PrinterNew.VolleyCallback() {
                                             @Override
                                             public void onSuccess(String result) {
-                                                runOnUiThread(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        Log.d("NSD", "Current menu  Resolve Succeeded " + nsdServiceInfo);
-                                                        mAdapter.notifyDataSetChanged();
-                                                    }
-                                                });
+
+                                                Log.d("NSD", "Current print   response added to timer " + nsdServiceInfo);
+                                                mAdapter.notifyDataSetChanged();
                                             }
+
 
                                             @Override
                                             public void onFailure(Object response) {
-                                                Log.d("NSD", "Current menu response failed");
+                                                Log.d("NSD", "Current print timer  failed");
                                             }
                                         });
                                     }
                                 });
                             }
-                        },0,2000);
-//                        new Timer().schedule(new TimerTask() {
-//                            @Override
-//                            public void run() {
-//                                runOnUiThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        mAdapter.notifyDataSetChanged();
-//                                    }
-//                                });
-//                            }
-//                        },0,2000);
+                        }, 0, 2000);
+//
 
                         Log.d("API", "Print information " + myPrinterDetails.getPrinterInformation());
                     }
@@ -228,9 +199,9 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Log.d("NSD", "Current menu  Resolve Succeeded " + nsdServiceInfo);
-                                services.add(myPrinterDetails);
-                                mAdapter.notifyDataSetChanged();
+                                Log.d("NSD", "Current menu response succeded and added to array " + nsdServiceInfo);
+                                //services.add(myPrinterDetails);
+                               mAdapter.notifyDataSetChanged();
 
                             }
                         });
@@ -245,31 +216,27 @@ public class MainActivity extends AppCompatActivity {
                                         myPrinterDetails.setMenuInformation("http://" + nsdServiceInfo.getHost() + "/GetCurrentMenu", MainActivity.this, new PrinterNew.VolleyCallback() {
                                             @Override
                                             public void onSuccess(String result) {
-                                                runOnUiThread(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        Log.d("NSD", "Current menu  Resolve Succeeded " + nsdServiceInfo);
-                                                        mAdapter.notifyDataSetChanged();
-                                                    }
-                                                });
+
+                                                Log.d("NSD", "Current menu  response added to timer  " + nsdServiceInfo);
+                                                mAdapter.notifyDataSetChanged();
                                             }
+
 
                                             @Override
                                             public void onFailure(Object response) {
-                                                Log.d("NSD", "Current menu response failed");
+                                                Log.d("NSD", "Current menu timer  failed");
                                             }
                                         });
                                     }
                                 });
                             }
-                        },0,2000);
+                        }, 0, 2000);
 
                     }
 
                     @Override
                     public void onFailure(Object response) {
                         Log.d("NSD", "Current menu response failed");
-                        return;
                     }
                 });
 
@@ -312,6 +279,8 @@ public class MainActivity extends AppCompatActivity {
 //                    mNsdManager.resolveService(serviceInfo, initializeResolveListener());
 //                }
 //            }
+
+
             for (PrinterNew printer : services) {
                 if (printer.getPrinterService() == serviceInfo) {
                     found = true;
@@ -321,16 +290,24 @@ public class MainActivity extends AppCompatActivity {
             if (!found) {
                 if (serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
                     mNsdManager.resolveService(serviceInfo, initializeResolveListener());
+
+
+
+
                 }
             }
+
+
+
+
         }
 
         @Override
         public void onServiceLost(NsdServiceInfo nsdServiceInfo) {
-            Log.d("NSD", "Service lost " + nsdServiceInfo);
+
             PrinterNew serviceToRemove = new PrinterNew();
             for (PrinterNew currentService : services) {
-                if (currentService.getPrinterName() ==  currentService.getPrinterName() && currentService.getPrinterModel() == currentService.getPrinterModel()) {
+                if (currentService.getPrinterName() == currentService.getPrinterName() && currentService.getPrinterModel() == currentService.getPrinterModel()) {
                     serviceToRemove = currentService;
                 }
             }
@@ -344,13 +321,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
+
+
+
+            Log.d("NSD", "Service lost " + nsdServiceInfo);
 //            Log.d("NSD", "Xd" + services);
         }
 
     };
-
-
-
 
 
 }
