@@ -88,7 +88,7 @@ public class PrinterNew {
         }));
     }
 
-    public String getMenuInformation() {
+  /*  public String getMenuInformation() {
         return menuInformation;
     }
 
@@ -123,11 +123,66 @@ public class PrinterNew {
                 callback.onFailure(error);
             }
         }));
-    }
+    }*/
 
 
     public boolean isIdle() {
-        if (state == -1 && currentMenu == 0) {
+        if (state == -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isHeating() {
+        if (state == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isPrinting() {
+        if (state == 2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isTransfering() {
+        if (state == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isPausing() {
+        if (state == 3) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isPaused() {
+        if (state == 4) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isCancelling() {
+        if (state == 5) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public boolean isFinished() {
+        if (state == 6) {
             return true;
         } else {
             return false;

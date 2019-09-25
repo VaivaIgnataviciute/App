@@ -61,16 +61,50 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
         ImageView i = listItem.findViewById(R.id.status_circle);
         TextView t = listItem.findViewById(R.id.TextView_serviceName);
         final TextView r = listItem.findViewById(R.id.TextView_serviceIP);
+        TextView printing = listItem.findViewById(R.id.TextView_Printing);
         //hostAddress = currentService.getHost();
         r.setText(currentService.getPrinterModel());
         t.setText(currentService.getPrinterName());
 
 
-            if (currentService.isIdle()) {
+           /* if (currentService.isIdle()) {
                 i.setColorFilter(Color.rgb(42, 187, 155));
             } else {
                 i.setColorFilter(Color.rgb(240, 52, 52));
-            }
+            }*/
+
+           if (currentService.isIdle()) {
+               printing.setText("Idle");
+               printing.setTextColor(Color.rgb(42, 187, 155));
+           } else if (currentService.isHeating()) {
+               printing.setText("Heating");
+               printing.setTextColor(Color.rgb(240, 52, 52));
+           } else if (currentService.isPrinting()) {
+               printing.setText("Printing");
+               printing.setTextColor(Color.rgb(240, 52, 52));
+           } else if (currentService.isTransfering()) {
+               printing.setText("Transfering");
+               printing.setTextColor(Color.rgb(240, 52, 52));
+
+           } else if (currentService.isPausing()) {
+               printing.setText("Pausing");
+               printing.setTextColor(Color.rgb(240, 52, 52));
+           } else if (currentService.isPaused()) {
+               printing.setText("Paused");
+               printing.setTextColor(Color.rgb(240, 52, 52));
+           } else if (currentService.isCancelling()){
+               printing.setText("Cancelling");
+               printing.setTextColor(Color.rgb(240, 52, 52));
+           } else if (currentService.isFinished()) {
+               printing.setText("Finished");
+               printing.setTextColor(Color.rgb(42, 187, 155));
+           } else {
+               Log.d("nesuveike", "nesuveike haha");
+           }
+
+
+
+
 
 
 

@@ -30,6 +30,14 @@
         android:paddingBottom="7dp"
         android:id="@+id/TextView_serviceIP"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/TextView_Printing"
+        android:textSize="16dp"
+        android:paddingLeft="20dp"
+        android:paddingBottom="7dp" />
+
 </LinearLayout>
 
 
@@ -43,6 +51,8 @@
         android:paddingRight="30dp"
         android:src="@drawable/status_circle"
         android:id="@+id/status_circle"/>
+
+
 
 
 

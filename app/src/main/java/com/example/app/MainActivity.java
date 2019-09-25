@@ -128,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 Log.d("NSD", "Print model Resolve Succeeded" + nsdServiceInfo);
                                 services.add(myPrinterDetails);
-
                                 mAdapter.notifyDataSetChanged();
                             }
                         });
@@ -161,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        myPrinterDetails.setMenuInformation("http://" + nsdServiceInfo.getHost() + "/PrintGetInformation", MainActivity.this, new PrinterNew.VolleyCallback() {
+                                        myPrinterDetails.setPrinterInformation("http://" + nsdServiceInfo.getHost() + "/PrintGetInformation", MainActivity.this, new PrinterNew.VolleyCallback() {
                                             @Override
                                             public void onSuccess(String result) {
 
@@ -192,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                myPrinterDetails.setMenuInformation("http://" + nsdServiceInfo.getHost() + "/GetCurrentMenu", MainActivity.this, new PrinterNew.VolleyCallback() {
+                /*myPrinterDetails.setMenuInformation("http://" + nsdServiceInfo.getHost() + "/GetCurrentMenu", MainActivity.this, new PrinterNew.VolleyCallback() {
                     @Override
                     public void onSuccess(String result) {
 
@@ -238,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onFailure(Object response) {
                         Log.d("NSD", "Current menu response failed");
                     }
-                });
+                });*/
 
             }
         };
