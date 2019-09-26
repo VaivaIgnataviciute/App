@@ -20,12 +20,15 @@ import java.util.Timer;
 
 public class PrinterNew {
     String printerName;
+    String printerNickname;
     String printerModel;
+    String printFileName;
     NsdServiceInfo printerService;
     String printInformation;
     String menuInformation;
     int state = 0;
     int currentMenu = 0;
+    int printFileState = 0;
 
 
 
@@ -50,9 +53,96 @@ public class PrinterNew {
         this.printerName = printerName;
     }
 
+    public  String getPrintFileName(){return printFileName;}
+
+    public void  setPrintFileName (String url, Context context, final VolleyCallback callback) {
+        Log.d("API", "Currently calling URL " + url);
+        RequestQueue queue = Volley.newRequestQueue(context);
+        queue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("API", "Printer nickname" + response);
+
+
+                String temp = response.substring(2, response.length() -2);
+                byte msgArray[];
+
+                    msgArray = temp.getBytes();
+                    printFileState = msgArray[0];
+
+                    if (printFileState == 1) {
+                        printFileName = response.substring(3,response.length() - 2);
+                        printFileName = response;
+                    } else
+                    {
+                        Log.d("API", "Printer file is not available");
+                    }
+
+                callback.onSuccess(printFileName);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("API", "printer nickname  nope ");
+                callback.onFailure(error);
+            }
+        }));
+    }
+
+
+
+    public String getPrinterNickname() {return printerNickname;}
+
+    public void  setPrinterNickname (String url, Context context, final VolleyCallback callback) {
+        Log.d("API", "Currently calling URL " + url);
+        RequestQueue queue = Volley.newRequestQueue(context);
+        queue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("API", "Printer nickname" + response);
+
+                printerNickname = response.substring(2, response.length() - 3);
+                callback.onSuccess(printerNickname);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("API", "printer nickname  nope ");
+                callback.onFailure(error);
+            }
+        }));
+    }
+
+
     public String getPrinterModel() {
         return printerModel;
     }
+
+    public void setPrinterModel(String url, Context context, final VolleyCallback callback) {
+        Log.d("API", "Currently calling URL " + url);
+        RequestQueue queue = Volley.newRequestQueue(context);
+        queue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("API", "Printer model" + response);
+
+
+                printerModel = response.substring(2, response.length() - 3);
+                callback.onSuccess(printerModel);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("API", "printer model nope ");
+                callback.onFailure(error);
+            }
+        }));
+    }
+
+
 
     public String getPrinterInformation() {
         return this.printInformation;
@@ -88,7 +178,7 @@ public class PrinterNew {
         }));
     }
 
-  /*  public String getMenuInformation() {
+    public String getMenuInformation() {
         return menuInformation;
     }
 
@@ -111,6 +201,12 @@ public class PrinterNew {
                     e.printStackTrace();
                 }
 
+               /* if(currentMenu == 10) {
+                    Log.d("API", "Someone is doing bed leveling  ");
+                }*/
+
+
+
 
                 menuInformation = response;
                 callback.onSuccess(menuInformation);
@@ -123,11 +219,19 @@ public class PrinterNew {
                 callback.onFailure(error);
             }
         }));
-    }*/
+    }
+
+    public void setPrinterService(NsdServiceInfo service) {
+        this.printerService = service;
+    }
+
+    public NsdServiceInfo getPrinterService() {
+        return this.printerService;
+    }
 
 
     public boolean isIdle() {
-        if (state == -1) {
+        if (state == -1 && currentMenu == 0) {
             return true;
         } else {
             return false;
@@ -190,13 +294,11 @@ public class PrinterNew {
     }
 
 
-    public void setPrinterService(NsdServiceInfo service) {
-        this.printerService = service;
-    }
+    //Menu methods
 
-    public NsdServiceInfo getPrinterService() {
-        return this.printerService;
-    }
+
+
+
 
 
     public interface VolleyCallback {
@@ -205,33 +307,8 @@ public class PrinterNew {
         void onFailure(Object response);
     }
 
-    public void setPrinterModel(String url, Context context, final VolleyCallback callback) {
-        Log.d("API", "Currently calling URL " + url);
-        RequestQueue queue = Volley.newRequestQueue(context);
-        queue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d("API", "Printer model" + response);
-//                String temp = response.substring(2, response.length() - 3);
-//                byte array[] = temp.getBytes();
-//                Log.d("Model", "Printer mode" + temp);
 
-                //Assigning printer model to the PrinterNew class , printer model attribute.
 
-//                Log.d("Model", "zdrv77 " + myPrinterDetails.printerModel);
-                printerModel = response.substring(2, response.length() - 3);
-                callback.onSuccess(printerModel);
-//                PrinterNew myPrinterDetails = new PrinterNew();
-//                myPrinterDetails.setPrinterModel(stringResponse);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("API", "printer model nope ");
-                callback.onFailure(error);
-            }
-        }));
-    }
 }
 
 

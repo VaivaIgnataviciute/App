@@ -58,60 +58,52 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
 
 
         //We asign the the view to the item layout as a TextView
-        ImageView i = listItem.findViewById(R.id.status_circle);
-        TextView t = listItem.findViewById(R.id.TextView_serviceName);
-        final TextView r = listItem.findViewById(R.id.TextView_serviceIP);
-        TextView printing = listItem.findViewById(R.id.TextView_Printing);
+        ImageView statusCircle = listItem.findViewById(R.id.status_circle);
+        TextView serviceNickName = listItem.findViewById(R.id.TextView_serviceNickName);
+        final TextView serviceModel = listItem.findViewById(R.id.TextView_serviceModel);
+        TextView printingState = listItem.findViewById(R.id.TextView_PrintingState);
+        TextView printFileName  = listItem.findViewById(R.id.TextView_PrintFileName);
         //hostAddress = currentService.getHost();
-        r.setText(currentService.getPrinterModel());
-        t.setText(currentService.getPrinterName());
+        serviceModel.setText(currentService.getPrinterModel());
+        serviceNickName.setText(currentService.getPrinterNickname());
+        printFileName.setText(currentService.getPrintFileName());
 
 
            /* if (currentService.isIdle()) {
-                i.setColorFilter(Color.rgb(42, 187, 155));
+                statusCircle.setColorFilter(Color.rgb(42, 187, 155));
             } else {
-                i.setColorFilter(Color.rgb(240, 52, 52));
+                statusCircle.setColorFilter(Color.rgb(240, 52, 52));
             }*/
 
            if (currentService.isIdle()) {
-               printing.setText("Idle");
-               printing.setTextColor(Color.rgb(42, 187, 155));
+               printingState.setText("Idle");
+               printingState.setTextColor(Color.rgb(42, 187, 155));
            } else if (currentService.isHeating()) {
-               printing.setText("Heating");
-               printing.setTextColor(Color.rgb(240, 52, 52));
+               printingState.setText("Heating");
+               printingState.setTextColor(Color.rgb(240, 52, 52));
            } else if (currentService.isPrinting()) {
-               printing.setText("Printing");
-               printing.setTextColor(Color.rgb(240, 52, 52));
+               printingState.setText("Printing");
+               printingState.setTextColor(Color.rgb(240, 52, 52));
            } else if (currentService.isTransfering()) {
-               printing.setText("Transfering");
-               printing.setTextColor(Color.rgb(240, 52, 52));
+               printingState.setText("Transfering");
+               printingState.setTextColor(Color.rgb(240, 52, 52));
 
            } else if (currentService.isPausing()) {
-               printing.setText("Pausing");
-               printing.setTextColor(Color.rgb(240, 52, 52));
+               printingState.setText("Pausing");
+               printingState.setTextColor(Color.rgb(240, 52, 52));
            } else if (currentService.isPaused()) {
-               printing.setText("Paused");
-               printing.setTextColor(Color.rgb(240, 52, 52));
+               printingState.setText("Paused");
+               printingState.setTextColor(Color.rgb(240, 52, 52));
            } else if (currentService.isCancelling()){
-               printing.setText("Cancelling");
-               printing.setTextColor(Color.rgb(240, 52, 52));
+               printingState.setText("Cancelling");
+               printingState.setTextColor(Color.rgb(240, 52, 52));
            } else if (currentService.isFinished()) {
-               printing.setText("Finished");
-               printing.setTextColor(Color.rgb(42, 187, 155));
+               printingState.setText("Finished");
+               printingState.setTextColor(Color.rgb(42, 187, 155));
            } else {
                Log.d("nesuveike", "nesuveike haha");
            }
 
-
-
-
-
-
-
-
-
-        Log.d("bybis", "model" + String.valueOf(currentService.getPrinterModel()));
-        Log.d("hello2", String.valueOf(currentService.getPrinterName()));
 
 
         return listItem;

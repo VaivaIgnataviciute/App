@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         services = new ArrayList<>();
-        mAdapter = new NsdServiceInfoAdapter(this, R.id.TextView_serviceName, services);
+        mAdapter = new NsdServiceInfoAdapter(this, R.id.TextView_serviceNickName, services);
         ListView listView = findViewById(R.id.ListViewServices);
         listView.setAdapter(mAdapter); // we add custom adapter to the listview to display data from adapter.
 
@@ -118,8 +118,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onServiceResolved(final NsdServiceInfo nsdServiceInfo) {
                 final PrinterNew myPrinterDetails = new PrinterNew();
+
+                // Setting Printer name(factory name)
                 myPrinterDetails.setPrinterName(nsdServiceInfo.getServiceName());
                 Log.d("NSD", "Hostas" + nsdServiceInfo.getHost());
+
+
+                //Setting printer model  and adding it to the array.
                 myPrinterDetails.setPrinterModel("http://" + nsdServiceInfo.getHost() + "/SettingGetPrinterName", MainActivity.this, new PrinterNew.VolleyCallback() {
                     @Override
                     public void onSuccess(String result) {
@@ -140,6 +145,80 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+
+               // Setting print file name
+                myPrinterDetails.setPrintFileName("http://" + nsdServiceInfo.getHost() + "/PrintGetFileName", MainActivity.this, new PrinterNew.VolleyCallback() {
+                    @Override
+                    public void onSuccess(String result) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("NSD", "Print file name  Resolve Succeeded" + nsdServiceInfo);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        });
+
+
+                        // Adding timer which updates the print state every 2 seconds
+                        myTimer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        myPrinterDetails.setPrintFileName("http://" + nsdServiceInfo.getHost() + "/PrintGetFileName", MainActivity.this, new PrinterNew.VolleyCallback() {
+                                            @Override
+                                            public void onSuccess(String result) {
+
+                                                Log.d("NSD", "Current print   response added to timer " + nsdServiceInfo);
+                                                mAdapter.notifyDataSetChanged();
+                                            }
+
+
+                                            @Override
+                                            public void onFailure(Object response) {
+                                                Log.d("NSD", "Current print timer  failed");
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }, 0, 2000);
+//
+
+                        Log.d("API", "Print file  information " + myPrinterDetails.getPrintFileName());
+                    }
+
+                    @Override
+                    public void onFailure(Object response) {
+                        Log.d("NSD", "Print file name  response failed");
+                        return;
+                    }
+                });
+
+
+                //Setting printer's nick name
+                myPrinterDetails.setPrinterNickname("http://" + nsdServiceInfo.getHost() + "/SettingGetNickName", MainActivity.this, new PrinterNew.VolleyCallback() {
+                    @Override
+                    public void onSuccess(String result) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("NSD", "Print nickname  Resolve Succeeded" + nsdServiceInfo);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Object response) {
+                        Log.d("NSD", "Print nickname  response failed");
+                        return;
+
+                    }
+                });
+
+                //Setting print information such a status of print
                 myPrinterDetails.setPrinterInformation("http://" + nsdServiceInfo.getHost() + "/PrintGetInformation", MainActivity.this, new PrinterNew.VolleyCallback() {
                     @Override
                     public void onSuccess(String result) {
@@ -153,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
 
-
+                        // Adding timer which updates the print state every 2 seconds
                         myTimer.schedule(new TimerTask() {
                             @Override
                             public void run() {
@@ -191,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                /*myPrinterDetails.setMenuInformation("http://" + nsdServiceInfo.getHost() + "/GetCurrentMenu", MainActivity.this, new PrinterNew.VolleyCallback() {
+                myPrinterDetails.setMenuInformation("http://" + nsdServiceInfo.getHost() + "/GetCurrentMenu", MainActivity.this, new PrinterNew.VolleyCallback() {
                     @Override
                     public void onSuccess(String result) {
 
@@ -206,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
                         });
                         Log.d("NSD", "CurrentMenu " + myPrinterDetails.getMenuInformation());
 
-                        myTimer.schedule(new TimerTask() {
+                   /*     myTimer.schedule(new TimerTask() {
                             @Override
                             public void run() {
                                 runOnUiThread(new Runnable() {
@@ -229,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
                             }
-                        }, 0, 2000);
+                        }, 0, 2000);*/
 
                     }
 
@@ -237,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onFailure(Object response) {
                         Log.d("NSD", "Current menu response failed");
                     }
-                });*/
+                });
 
             }
         };
@@ -291,12 +370,8 @@ public class MainActivity extends AppCompatActivity {
                     mNsdManager.resolveService(serviceInfo, initializeResolveListener());
 
 
-
-
                 }
             }
-
-
 
 
         }
@@ -320,7 +395,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-
 
 
             Log.d("NSD", "Service lost " + nsdServiceInfo);

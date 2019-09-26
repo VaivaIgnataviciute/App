@@ -18,7 +18,7 @@
     android:layout_height="wrap_content"
     android:padding="20dp"
     android:textSize="16dp"
-    android:id="@+id/TextView_serviceName"/>
+    android:id="@+id/TextView_serviceNickName"/>
 
 
 
@@ -28,15 +28,24 @@
         android:textSize="16dp"
         android:paddingLeft="20dp"
         android:paddingBottom="7dp"
-        android:id="@+id/TextView_serviceIP"/>
+        android:id="@+id/TextView_serviceModel"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/TextView_Printing"
+        android:id="@+id/TextView_PrintingState"
         android:textSize="16dp"
         android:paddingLeft="20dp"
         android:paddingBottom="7dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/TextView_PrintFileName"
+        android:textSize="16dp"
+        android:paddingLeft="12dp"
+        android:paddingBottom="7dp" />
+
 
 </LinearLayout>
 
