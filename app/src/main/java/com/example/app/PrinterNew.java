@@ -27,7 +27,16 @@ public class PrinterNew {
     String printInformation;
     String menuInformation;
     int state = 0;
-    int currentMenu = 0;
+    int printPercentage1= 0;
+    int printPercentage2= 0;
+    int printPercentage3 = 0;
+    int printRemainingTime1 = 0;
+    int printRemainingTime2 = 0;
+    int printRemainingTime3 = 0;
+    String printTime;
+    float percentage =0;
+    int currentMenuIdle = 0;
+    int menuBedLevellinig =0;
     int printFileState = 0;
 
 
@@ -41,9 +50,6 @@ public class PrinterNew {
         this.state = state;
     }
 
-    public void setPrinterMenuInformation(int state) {
-        this.currentMenu = state;
-    }
 
     public String getPrinterName() {
         return printerName;
@@ -160,6 +166,20 @@ public class PrinterNew {
                 try {
                     msgArray = temp.getBytes("ISO-8859-1");
                     state = msgArray[0];
+                    printPercentage1 = msgArray[1];
+                    printPercentage2 = msgArray[2];
+                    printPercentage3 = msgArray[3];
+
+                    percentage = (printPercentage1 << 16) | (printPercentage2 << 8) | printPercentage3;
+                    percentage = percentage / 256.0f;
+
+                    printRemainingTime1 = msgArray[4];
+                    printRemainingTime2 = msgArray[5];
+                    printRemainingTime3 = msgArray[6];
+
+                    printTime = String.valueOf((printRemainingTime1 + printRemainingTime2 + printRemainingTime3));
+
+
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -196,7 +216,8 @@ public class PrinterNew {
                 byte msgArray[];
                 try {
                     msgArray = temp.getBytes("ISO-8859-1");
-                    currentMenu = msgArray[0];
+                    currentMenuIdle = msgArray[0];
+                    //menuBedLevellinig = msgArray[10];
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -230,8 +251,9 @@ public class PrinterNew {
     }
 
 
+
     public boolean isIdle() {
-        if (state == -1 && currentMenu == 0) {
+        if (state == -1 && currentMenuIdle == 0) {
             return true;
         } else {
             return false;

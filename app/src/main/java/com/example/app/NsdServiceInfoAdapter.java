@@ -62,11 +62,13 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
         TextView serviceNickName = listItem.findViewById(R.id.TextView_serviceNickName);
         final TextView serviceModel = listItem.findViewById(R.id.TextView_serviceModel);
         TextView printingState = listItem.findViewById(R.id.TextView_PrintingState);
+        TextView printPercentage = listItem.findViewById(R.id.TextView_PrintPercentage);
         TextView printFileName  = listItem.findViewById(R.id.TextView_PrintFileName);
+        TextView printTimeRemaining = listItem.findViewById(R.id.TextView_PrintTimeRemaining);
         //hostAddress = currentService.getHost();
         serviceModel.setText(currentService.getPrinterModel());
         serviceNickName.setText(currentService.getPrinterNickname());
-        printFileName.setText(currentService.getPrintFileName());
+        //printFileName.setText(currentService.getPrintFileName());
 
 
            /* if (currentService.isIdle()) {
@@ -83,6 +85,10 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
                printingState.setTextColor(Color.rgb(240, 52, 52));
            } else if (currentService.isPrinting()) {
                printingState.setText("Printing");
+               printPercentage.setText((String.valueOf(currentService.percentage)));
+               printFileName.setText(currentService.getPrintFileName());
+               printTimeRemaining.setText(currentService.printTime);
+
                printingState.setTextColor(Color.rgb(240, 52, 52));
            } else if (currentService.isTransfering()) {
                printingState.setText("Transfering");
@@ -100,9 +106,11 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
            } else if (currentService.isFinished()) {
                printingState.setText("Finished");
                printingState.setTextColor(Color.rgb(42, 187, 155));
+               //printPercentage.setText((String.valueOf(currentService.percentage)));
            } else {
                Log.d("nesuveike", "nesuveike haha");
            }
+
 
 
 

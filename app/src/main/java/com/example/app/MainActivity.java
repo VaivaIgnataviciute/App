@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
                         });
                         Log.d("NSD", "CurrentMenu " + myPrinterDetails.getMenuInformation());
 
-                   /*     myTimer.schedule(new TimerTask() {
+                       myTimer.schedule(new TimerTask() {
                             @Override
                             public void run() {
                                 runOnUiThread(new Runnable() {
@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
                             }
-                        }, 0, 2000);*/
+                        }, 0, 2000);
 
                     }
 

@@ -46,6 +46,22 @@
         android:paddingLeft="12dp"
         android:paddingBottom="7dp" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/TextView_PrintPercentage"
+        android:textSize="16dp"
+        android:paddingLeft="16dp"
+        android:paddingBottom="7dp" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/TextView_PrintTimeRemaining"
+        android:textSize="16dp"
+        android:paddingLeft="16dp"
+        android:paddingBottom="7dp" />
 
 </LinearLayout>
 
