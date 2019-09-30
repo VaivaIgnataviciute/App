@@ -30,6 +30,12 @@
         android:paddingBottom="7dp"
         android:id="@+id/TextView_serviceModel"/>
 
+     <TextView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:paddingRight="30dp"
+       android:id="@+id/TextView_ErrorMessage"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -76,6 +82,7 @@
         android:paddingRight="30dp"
         android:src="@drawable/status_circle"
         android:id="@+id/status_circle"/>
+
 
 
 

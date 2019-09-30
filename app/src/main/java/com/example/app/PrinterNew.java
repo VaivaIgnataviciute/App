@@ -34,9 +34,9 @@ public class PrinterNew {
     int printRemainingTime2 = 0;
     int printRemainingTime3 = 0;
     String printTime;
+    String percentageToPrint;
     float percentage =0;
-    int currentMenuIdle = 0;
-    int menuBedLevellinig =0;
+    int currentMenu = 0;
     int printFileState = 0;
 
 
@@ -172,12 +172,13 @@ public class PrinterNew {
 
                     percentage = (printPercentage1 << 16) | (printPercentage2 << 8) | printPercentage3;
                     percentage = percentage / 256.0f;
+                    percentageToPrint = String.valueOf(percentage) + "%";
 
                     printRemainingTime1 = msgArray[4];
                     printRemainingTime2 = msgArray[5];
                     printRemainingTime3 = msgArray[6];
 
-                    printTime = String.valueOf((printRemainingTime1 + printRemainingTime2 + printRemainingTime3));
+                    printTime = "Remaining time: "  +  String.valueOf(printRemainingTime1) + ":"+String.valueOf((printRemainingTime2 )+ ":" + String.valueOf(printRemainingTime3));
 
 
                 } catch (UnsupportedEncodingException e) {
@@ -216,8 +217,7 @@ public class PrinterNew {
                 byte msgArray[];
                 try {
                     msgArray = temp.getBytes("ISO-8859-1");
-                    currentMenuIdle = msgArray[0];
-                    //menuBedLevellinig = msgArray[10];
+                    currentMenu = msgArray[0];
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -253,12 +253,57 @@ public class PrinterNew {
 
 
     public boolean isIdle() {
-        if (state == -1 && currentMenuIdle == 0) {
+        if (state == -1 && currentMenu == 0) {
             return true;
         } else {
             return false;
         }
     }
+
+
+    public boolean isOccupied() {
+        if (currentMenu == 3 || currentMenu == 4 || currentMenu == 5 || currentMenu == 9 || currentMenu == 11 || currentMenu == 14 || currentMenu == 15 || currentMenu == 16 || currentMenu == 24 || currentMenu == 25) {
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isBusyRed() {
+        if (currentMenu == 6 || currentMenu == 7 || currentMenu == 8 || currentMenu == 10 || currentMenu == 12 || currentMenu == 18 || currentMenu == 27) {
+            return true;
+        } else  {
+            return false;
+        }
+    }
+
+    public boolean isBusyPurple() {
+        if (currentMenu == 13 || currentMenu == 20 || currentMenu == 21 || currentMenu == 22 || currentMenu == 23 || currentMenu == 26 || currentMenu == 29 ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isErrorMessage() {
+        if (currentMenu == 19) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isPrintingMenuState() {
+        if (currentMenu == 1 || currentMenu == 2 || currentMenu == 17 || currentMenu == 28 || currentMenu == 30) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
 
     public boolean isHeating() {
         if (state == 1) {

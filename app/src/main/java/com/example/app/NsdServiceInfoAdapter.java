@@ -65,6 +65,7 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
         TextView printPercentage = listItem.findViewById(R.id.TextView_PrintPercentage);
         TextView printFileName  = listItem.findViewById(R.id.TextView_PrintFileName);
         TextView printTimeRemaining = listItem.findViewById(R.id.TextView_PrintTimeRemaining);
+        TextView errorMessage = listItem.findViewById(R.id.TextView_ErrorMessage);
         //hostAddress = currentService.getHost();
         serviceModel.setText(currentService.getPrinterModel());
         serviceNickName.setText(currentService.getPrinterNickname());
@@ -85,7 +86,8 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
                printingState.setTextColor(Color.rgb(240, 52, 52));
            } else if (currentService.isPrinting()) {
                printingState.setText("Printing");
-               printPercentage.setText((String.valueOf(currentService.percentage)));
+               printPercentage.setText((String.valueOf(currentService.percentageToPrint)));
+
                printFileName.setText(currentService.getPrintFileName());
                printTimeRemaining.setText(currentService.printTime);
 
@@ -109,6 +111,24 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
                //printPercentage.setText((String.valueOf(currentService.percentage)));
            } else {
                Log.d("nesuveike", "nesuveike haha");
+           }
+
+           if (currentService.isOccupied()) {
+               statusCircle.setColorFilter(Color.rgb(244, 208, 63));
+           } else if (currentService.isBusyRed()){
+               statusCircle.setColorFilter(Color.rgb(214, 69, 65));
+           } else if (currentService.isBusyPurple()) {
+               statusCircle.setColorFilter(Color.rgb(213, 184, 255));
+           } else if (currentService.isErrorMessage()) {
+               errorMessage.setText("Error occured");
+               errorMessage.setTextColor(Color.rgb(214, 69, 65));
+           } else if (currentService.isPrintingMenuState()) {
+               statusCircle.setColorFilter(Color.rgb(228, 241, 254));
+
+           } else {
+               if (currentService.isIdle()) {
+                   statusCircle.setColorFilter(Color.rgb(42, 187, 155));
+               }
            }
 
 
