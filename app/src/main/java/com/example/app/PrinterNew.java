@@ -34,6 +34,7 @@ public class PrinterNew {
     int printRemainingTime2 = 0;
     int printRemainingTime3 = 0;
     String printTime;
+    String printFileNameToDisplay;
     String percentageToPrint;
     float percentage =0;
     int currentMenu = 0;
@@ -60,40 +61,49 @@ public class PrinterNew {
     }
 
     public  String getPrintFileName(){return printFileName;}
+    private RequestQueue aRequestQueue;
+    private  RequestQueue bRequestQueue;
+    private  RequestQueue cRequestQueue;
+    private  RequestQueue dRequestQueue;
+    private  RequestQueue eRequestQueue;
+
 
     public void  setPrintFileName (String url, Context context, final VolleyCallback callback) {
-        Log.d("API", "Currently calling URL " + url);
-        RequestQueue queue = Volley.newRequestQueue(context);
-        queue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d("API", "Printer nickname" + response);
+
+        if (aRequestQueue == null) {
+            Log.d("API", "Currently calling URL " + url);
+            aRequestQueue = Volley.newRequestQueue(context);
+            aRequestQueue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.d("API", "Printer nickname" + response);
 
 
-                String temp = response.substring(2, response.length() -2);
-                byte msgArray[];
+                    String temp = response.substring(2, response.length() - 2);
+                    byte msgArray[];
 
                     msgArray = temp.getBytes();
                     printFileState = msgArray[0];
 
                     if (printFileState == 1) {
-                        printFileName = response.substring(3,response.length() - 2);
+                        printFileName = response.substring(3, response.length() - 2);
                         printFileName = response;
-                    } else
-                    {
+                        printFileNameToDisplay = "(" + printFileName + ")";
+                    } else {
                         Log.d("API", "Printer file is not available");
                     }
 
-                callback.onSuccess(printFileName);
+                    callback.onSuccess(printFileName);
 
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("API", "printer nickname  nope ");
-                callback.onFailure(error);
-            }
-        }));
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d("API", "printer nickname  nope ");
+                    callback.onFailure(error);
+                }
+            }));
+        }
     }
 
 
@@ -101,24 +111,28 @@ public class PrinterNew {
     public String getPrinterNickname() {return printerNickname;}
 
     public void  setPrinterNickname (String url, Context context, final VolleyCallback callback) {
-        Log.d("API", "Currently calling URL " + url);
-        RequestQueue queue = Volley.newRequestQueue(context);
-        queue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d("API", "Printer nickname" + response);
 
-                printerNickname = response.substring(2, response.length() - 3);
-                callback.onSuccess(printerNickname);
 
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("API", "printer nickname  nope ");
-                callback.onFailure(error);
-            }
-        }));
+
+            Log.d("API", "Currently calling URL " + url);
+          RequestQueue queue = Volley.newRequestQueue(context);
+           queue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.d("API", "Printer nickname" + response);
+
+                    printerNickname = response.substring(2, response.length() - 3);
+                    callback.onSuccess(printerNickname);
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d("API", "printer nickname  nope ");
+                    callback.onFailure(error);
+                }
+            }));
+
     }
 
 
@@ -154,49 +168,54 @@ public class PrinterNew {
         return this.printInformation;
     }
 
+
+
     public void setPrinterInformation(String url, Context context, final VolleyCallback callback) {
-        Log.d("API", "Currently calling URL " + url);
-        RequestQueue queue = Volley.newRequestQueue(context);
-        queue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d("API", "Print information" + response);
-                String temp = response.substring(2, response.length() - 2);
-                byte msgArray[];
-                try {
-                    msgArray = temp.getBytes("ISO-8859-1");
-                    state = msgArray[0];
-                    printPercentage1 = msgArray[1];
-                    printPercentage2 = msgArray[2];
-                    printPercentage3 = msgArray[3];
-
-                    percentage = (printPercentage1 << 16) | (printPercentage2 << 8) | printPercentage3;
-                    percentage = percentage / 256.0f;
-                    percentageToPrint = String.valueOf(percentage) + "%";
-
-                    printRemainingTime1 = msgArray[4];
-                    printRemainingTime2 = msgArray[5];
-                    printRemainingTime3 = msgArray[6];
-
-                    printTime = "Remaining time: "  +  String.valueOf(printRemainingTime1) + ":"+String.valueOf((printRemainingTime2 )+ ":" + String.valueOf(printRemainingTime3));
 
 
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+            Log.d("API", "Currently calling URL " + url);
+            RequestQueue queue = Volley.newRequestQueue(context);
+      queue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.d("API", "Print information" + response);
+                    String temp = response.substring(2, response.length() - 2);
+                    byte msgArray[];
+                    try {
+                        msgArray = temp.getBytes("ISO-8859-1");
+                        state = msgArray[0];
+                        printPercentage1 = msgArray[1];
+                        printPercentage2 = msgArray[2];
+                        printPercentage3 = msgArray[3];
+
+                        percentage = (printPercentage1 << 16) | (printPercentage2 << 8) | printPercentage3;
+                        percentage = percentage / 256.0f;
+                        percentageToPrint = String.valueOf(percentage) + "%";
+
+                        printRemainingTime1 = msgArray[4];
+                        printRemainingTime2 = msgArray[5];
+                        printRemainingTime3 = msgArray[6];
+
+                        printTime = "Remaining time: " + String.valueOf(printRemainingTime1) + ":" + String.valueOf((printRemainingTime2) + ":" + String.valueOf(printRemainingTime3));
+
+
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    printInformation = response;
+                    callback.onSuccess(printInformation);
+
                 }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d("API", "Print information nope ");
+                    callback.onFailure(error);
+                }
+            }));
 
-
-                printInformation = response;
-                callback.onSuccess(printInformation);
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("API", "Print information nope ");
-                callback.onFailure(error);
-            }
-        }));
     }
 
     public String getMenuInformation() {
@@ -251,6 +270,7 @@ public class PrinterNew {
     }
 
 
+    //checking menu and printing state if idle
 
     public boolean isIdle() {
         if (state == -1 && currentMenu == 0) {
@@ -260,6 +280,7 @@ public class PrinterNew {
         }
     }
 
+    //Menu states
 
     public boolean isOccupied() {
         if (currentMenu == 3 || currentMenu == 4 || currentMenu == 5 || currentMenu == 9 || currentMenu == 11 || currentMenu == 14 || currentMenu == 15 || currentMenu == 16 || currentMenu == 24 || currentMenu == 25) {
@@ -271,7 +292,7 @@ public class PrinterNew {
     }
 
     public boolean isBusyRed() {
-        if (currentMenu == 6 || currentMenu == 7 || currentMenu == 8 || currentMenu == 10 || currentMenu == 12 || currentMenu == 18 || currentMenu == 27) {
+        if (currentMenu == 6 || currentMenu == 7 || currentMenu == 8 || currentMenu == 10 || currentMenu == 12 ||currentMenu == 17 || currentMenu == 18 || currentMenu == 27) {
             return true;
         } else  {
             return false;
@@ -295,7 +316,7 @@ public class PrinterNew {
     }
 
     public boolean isPrintingMenuState() {
-        if (currentMenu == 1 || currentMenu == 2 || currentMenu == 17 || currentMenu == 28 || currentMenu == 30) {
+        if (currentMenu == 1 || currentMenu == 2 ||  currentMenu == 28 || currentMenu == 30) {
             return true;
         } else {
             return false;
@@ -304,6 +325,7 @@ public class PrinterNew {
 
 
 
+    //Printing states
 
     public boolean isHeating() {
         if (state == 1) {
@@ -359,13 +381,6 @@ public class PrinterNew {
             return false;
         }
     }
-
-
-    //Menu methods
-
-
-
-
 
 
     public interface VolleyCallback {

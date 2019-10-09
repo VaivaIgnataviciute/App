@@ -2,90 +2,116 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    >
+    android:orientation="horizontal">
 
 
-
-<!--Created text view element for the list item-->
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_weight="1">
-    <TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="20dp"
-    android:textSize="16dp"
-    android:id="@+id/TextView_serviceNickName"/>
-
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16dp"
-        android:paddingLeft="20dp"
-        android:paddingBottom="7dp"
-        android:id="@+id/TextView_serviceModel"/>
-
-     <TextView
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:paddingRight="30dp"
-       android:id="@+id/TextView_ErrorMessage"/>
-
-    <TextView
+    <!--Created text view element for the list item-->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/TextView_PrintingState"
-        android:textSize="16dp"
-        android:paddingLeft="20dp"
-        android:paddingBottom="7dp" />
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/TextView_PrintFileName"
-        android:textSize="16dp"
-        android:paddingLeft="12dp"
-        android:paddingBottom="7dp" />
+        <TextView
+            android:id="@+id/TextView_serviceNickName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingTop="20dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="10dp"
+            android:textSize="17dp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/TextView_PrintPercentage"
-        android:textSize="16dp"
-        android:paddingLeft="16dp"
-        android:paddingBottom="7dp" />
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/TextView_PrintTimeRemaining"
-        android:textSize="16dp"
-        android:paddingLeft="16dp"
-        android:paddingBottom="7dp" />
-
-</LinearLayout>
+            <!--android:textColor="#2B1247" purple color for printer name-->
 
 
 
+        <TextView
+            android:id="@+id/TextView_serviceModel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:textSize="15dp" />
+
+
+        <TextView
+            android:id="@+id/TextView_ErrorMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="30dp" />
+
+        <TextView
+            android:id="@+id/TextView_PrintingState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingBottom="7dp"
+            android:textSize="16dp"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/TextView_PrintFileName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="12dp"
+            android:paddingBottom="7dp"
+            android:textSize="16dp" />
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/time_clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="17dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/clock" />
+
+
+        <TextView
+            android:id="@+id/TextView_PrintTimeRemaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="20dp"
+            android:textSize="16dp" />
+
+
+            <TextView
+                android:id="@+id/TextView_PrintPercentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:textSize="16dp" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 
     <ImageView
+        android:id="@+id/status_circle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="35dp"
-        android:paddingRight="30dp"
-        android:src="@drawable/status_circle"
-        android:id="@+id/status_circle"/>
+        android:paddingTop="30dp"
+        android:paddingRight="40dp"
+        android:src="@drawable/status_circle" />
 
-
-
-
+    <ImageView
+        android:id="@+id/print_circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="30dp"
+        android:paddingRight="40dp"
+        android:src="@drawable/circle_small" />
 
 
 </LinearLayout>

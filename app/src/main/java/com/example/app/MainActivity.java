@@ -6,9 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.net.nsd.NsdServiceInfo;
 import android.content.Context;
 import android.net.nsd.NsdManager;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -25,7 +28,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -44,8 +49,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String SERVICE_TYPE = "_cir3dprinter._tcp."; // change to normal
-//    private String SERVICE_TYPE = "_googlecast._tcp.";
+    private static Object ConnectivityManager;
+    private String SERVICE_TYPE = "_cir3dprinter._tcp.";
 
 
     private InetAddress hostAddress;
@@ -54,6 +59,21 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<PrinterNew> services;
     private NsdServiceInfoAdapter mAdapter;
     private Timer myTimer = new Timer();
+
+
+
+    private Boolean isWifiOnAndConnected() {
+
+        WifiManager wifiMgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (wifiMgr.isWifiEnabled()) {
+            WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+
 
 
     @Override
@@ -65,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        TextView wifiText = (TextView)(findViewById(R.id.wifiText));
+        ImageView wifiImg = (ImageView) (findViewById(R.id.WifiImage));
 
         services = new ArrayList<>();
         mAdapter = new NsdServiceInfoAdapter(this, R.id.TextView_serviceNickName, services);
@@ -76,7 +98,19 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-        //NSD stuff
+        if (isWifiOnAndConnected()) {
+            Log.d("wifi", "wifi is On  ");
+            wifiText.setVisibility(View.GONE);
+            wifiImg.setVisibility(View.GONE);
+
+
+        } else {
+            Log.d("wifi", "please turn on your wifi ");
+            wifiText.setText("Please enable wifi which is used by your printer");
+
+        }
+
+
 
         mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
         mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
@@ -94,8 +128,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                //mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+
+                //I removed resolveService from setItemOnClickListener to stop resolving when user taps on service.
                 //mNsdManager.resolveService(selectedService, mResolveListener);
+
 
             }
         });
@@ -146,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-               // Setting print file name
+                // Setting print file name
                 myPrinterDetails.setPrintFileName("http://" + nsdServiceInfo.getHost() + "/PrintGetFileName", MainActivity.this, new PrinterNew.VolleyCallback() {
                     @Override
                     public void onSuccess(String result) {
@@ -208,6 +244,33 @@ public class MainActivity extends AppCompatActivity {
                                 mAdapter.notifyDataSetChanged();
                             }
                         });
+
+
+                        // Adding timer which updates the print state every 2 seconds
+                        myTimer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        myPrinterDetails.setPrinterInformation("http://" + nsdServiceInfo.getHost() + "/SettingGetNickName", MainActivity.this, new PrinterNew.VolleyCallback() {
+                                            @Override
+                                            public void onSuccess(String result) {
+
+                                                Log.d("NSD", "   response added to timer " + nsdServiceInfo);
+                                                mAdapter.notifyDataSetChanged();
+                                            }
+
+
+                                            @Override
+                                            public void onFailure(Object response) {
+                                                Log.d("NSD", "Current print timer  failed");
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }, 0, 2000);
                     }
 
                     @Override
@@ -256,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
                             }
-                        }, 0, 2000);
+                        }, 0, 1000);
 //
 
                         Log.d("API", "Print information " + myPrinterDetails.getPrinterInformation());
@@ -279,13 +342,13 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 Log.d("NSD", "Current menu response succeded and added to array " + nsdServiceInfo);
                                 //services.add(myPrinterDetails);
-                               mAdapter.notifyDataSetChanged();
+                                mAdapter.notifyDataSetChanged();
 
                             }
                         });
                         Log.d("NSD", "CurrentMenu " + myPrinterDetails.getMenuInformation());
 
-                       myTimer.schedule(new TimerTask() {
+                        myTimer.schedule(new TimerTask() {
                             @Override
                             public void run() {
                                 runOnUiThread(new Runnable() {
@@ -352,18 +415,15 @@ public class MainActivity extends AppCompatActivity {
             Log.d("NSD", "Service discovery success : " + serviceInfo);
             Log.d("NSD", "Host = " + serviceInfo.getServiceName());
             Log.d("NSD", "Port = " + serviceInfo.getPort());
-//            if (!services.contains(serviceInfo)) {
-//                if (serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
-//                    mNsdManager.resolveService(serviceInfo, initializeResolveListener());
-//                }
-//            }
-
 
             for (PrinterNew printer : services) {
                 if (printer.getPrinterService() == serviceInfo) {
                     found = true;
                 }
             }
+
+            //I looped through every service in "services" array and if the services were found  I
+            //assigned to true, and checked if services were found and if service type was right then resolve service
 
             if (!found) {
                 if (serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
@@ -379,12 +439,16 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceLost(NsdServiceInfo nsdServiceInfo) {
 
+            //currentService  loops trough services  and find matches and assign to serviceToRemove object
+            //which will be used in code block below
             PrinterNew serviceToRemove = new PrinterNew();
             for (PrinterNew currentService : services) {
                 if (currentService.getPrinterName() == currentService.getPrinterName() && currentService.getPrinterModel() == currentService.getPrinterModel()) {
                     serviceToRemove = currentService;
                 }
             }
+            //Then I assign new PrinterNew object to  ServiceToRemove object
+            //and check if there is any matching service then remove from the array and update arrayAdapter
             final PrinterNew finalServiceToRemove = serviceToRemove;
             if (serviceToRemove != null) {
                 runOnUiThread(new Runnable() {
@@ -398,10 +462,11 @@ public class MainActivity extends AppCompatActivity {
 
 
             Log.d("NSD", "Service lost " + nsdServiceInfo);
-//            Log.d("NSD", "Xd" + services);
         }
 
     };
+
+
 
 
 }

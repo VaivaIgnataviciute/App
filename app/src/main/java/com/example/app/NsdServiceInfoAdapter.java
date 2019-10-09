@@ -2,6 +2,7 @@ package com.example.app;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
 import android.util.Printer;
@@ -54,7 +55,9 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
             listItem = LayoutInflater.from(mContext).inflate(R.layout.list_item, parent, false);
 
         //Getting data's position in the data set.
-         PrinterNew currentService = services.get(position);
+        PrinterNew currentService = services.get(position);
+
+
 
 
         //We asign the the view to the item layout as a TextView
@@ -63,75 +66,138 @@ public class NsdServiceInfoAdapter extends ArrayAdapter<PrinterNew> {
         final TextView serviceModel = listItem.findViewById(R.id.TextView_serviceModel);
         TextView printingState = listItem.findViewById(R.id.TextView_PrintingState);
         TextView printPercentage = listItem.findViewById(R.id.TextView_PrintPercentage);
-        TextView printFileName  = listItem.findViewById(R.id.TextView_PrintFileName);
+        TextView printFileName = listItem.findViewById(R.id.TextView_PrintFileName);
         TextView printTimeRemaining = listItem.findViewById(R.id.TextView_PrintTimeRemaining);
         TextView errorMessage = listItem.findViewById(R.id.TextView_ErrorMessage);
-        //hostAddress = currentService.getHost();
+        ImageView printCircle = listItem.findViewById(R.id.print_circle);
+        ImageView clock = listItem.findViewById(R.id.time_clock);
         serviceModel.setText(currentService.getPrinterModel());
         serviceNickName.setText(currentService.getPrinterNickname());
-        //printFileName.setText(currentService.getPrintFileName());
 
 
-           /* if (currentService.isIdle()) {
-                statusCircle.setColorFilter(Color.rgb(42, 187, 155));
-            } else {
-                statusCircle.setColorFilter(Color.rgb(240, 52, 52));
-            }*/
+        if (currentService.isIdle()) {
 
-           if (currentService.isIdle()) {
-               printingState.setText("Idle");
-               printingState.setTextColor(Color.rgb(42, 187, 155));
-           } else if (currentService.isHeating()) {
-               printingState.setText("Heating");
-               printingState.setTextColor(Color.rgb(240, 52, 52));
-           } else if (currentService.isPrinting()) {
-               printingState.setText("Printing");
-               printPercentage.setText((String.valueOf(currentService.percentageToPrint)));
+            statusCircle.setColorFilter(Color.rgb(42, 187, 155));
+            statusCircle.setVisibility(View.VISIBLE);
+            printingState.setText("");
+            printPercentage.setText("");
+            printFileName.setText("");
+            printTimeRemaining.setText("");
+            clock.setVisibility(View.GONE);
+            clock.setVisibility(View.INVISIBLE);
 
-               printFileName.setText(currentService.getPrintFileName());
-               printTimeRemaining.setText(currentService.printTime);
+        } else if (currentService.isHeating()) {
 
-               printingState.setTextColor(Color.rgb(240, 52, 52));
-           } else if (currentService.isTransfering()) {
-               printingState.setText("Transfering");
-               printingState.setTextColor(Color.rgb(240, 52, 52));
-
-           } else if (currentService.isPausing()) {
-               printingState.setText("Pausing");
-               printingState.setTextColor(Color.rgb(240, 52, 52));
-           } else if (currentService.isPaused()) {
-               printingState.setText("Paused");
-               printingState.setTextColor(Color.rgb(240, 52, 52));
-           } else if (currentService.isCancelling()){
-               printingState.setText("Cancelling");
-               printingState.setTextColor(Color.rgb(240, 52, 52));
-           } else if (currentService.isFinished()) {
-               printingState.setText("Finished");
-               printingState.setTextColor(Color.rgb(42, 187, 155));
-               //printPercentage.setText((String.valueOf(currentService.percentage)));
-           } else {
-               Log.d("nesuveike", "nesuveike haha");
-           }
-
-           if (currentService.isOccupied()) {
-               statusCircle.setColorFilter(Color.rgb(244, 208, 63));
-           } else if (currentService.isBusyRed()){
-               statusCircle.setColorFilter(Color.rgb(214, 69, 65));
-           } else if (currentService.isBusyPurple()) {
-               statusCircle.setColorFilter(Color.rgb(213, 184, 255));
-           } else if (currentService.isErrorMessage()) {
-               errorMessage.setText("Error occured");
-               errorMessage.setTextColor(Color.rgb(214, 69, 65));
-           } else if (currentService.isPrintingMenuState()) {
-               statusCircle.setColorFilter(Color.rgb(228, 241, 254));
-
-           } else {
-               if (currentService.isIdle()) {
-                   statusCircle.setColorFilter(Color.rgb(42, 187, 155));
-               }
-           }
+            printingState.setText("Heating up..");
+            printingState.setTextColor(Color.rgb(43, 18, 71));
+            clock.setVisibility(View.GONE);
+            printPercentage.setText("");
+            printFileName.setText("");
+            printTimeRemaining.setText("");
 
 
+        } else if (currentService.isPrinting()) {
+
+            printingState.setText("Printing..");
+            printingState.setTextColor(Color.rgb(43, 18, 71));
+            printPercentage.setText((String.valueOf(currentService.percentageToPrint)));
+            printTimeRemaining.setText(currentService.printTime);
+            printFileName.setText(currentService.printFileNameToDisplay);
+            clock.setVisibility(View.VISIBLE);
+
+        } else if (currentService.isPausing()) {
+
+            printingState.setText("Pausing..");
+            printingState.setTextColor(Color.rgb(43, 18, 71));
+            printPercentage.setText((String.valueOf(currentService.percentageToPrint)));
+            printTimeRemaining.setText(currentService.printTime);
+            printFileName.setText(currentService.printFileNameToDisplay);
+            clock.setVisibility(View.VISIBLE);
+
+
+        } else if (currentService.isPaused()) {
+
+            printingState.setText("Paused..");
+            printingState.setTextColor(Color.rgb(43, 18, 71));
+            printPercentage.setText((String.valueOf(currentService.percentageToPrint)));
+            printTimeRemaining.setText(currentService.printTime);
+            printFileName.setText(currentService.printFileNameToDisplay);
+            clock.setVisibility(View.VISIBLE);
+
+        } else if (currentService.isCancelling()) {
+
+            printingState.setText("Cancelling..");
+            printingState.setTextColor(Color.rgb(43, 18, 71));
+            printPercentage.setText("");
+            printFileName.setText("");
+            printTimeRemaining.setText("");
+
+        } else if (currentService.isFinished()) {
+
+            printingState.setText("Finished..");
+            printingState.setTextColor(Color.rgb(43, 18, 71));
+            printPercentage.setText((String.valueOf(currentService.percentageToPrint)));
+            printTimeRemaining.setText(currentService.printTime);
+            printFileName.setText(currentService.printFileName);
+            clock.setVisibility(View.VISIBLE);
+
+        } else {
+
+            Log.d("nesuveike", "nesuveike haha");
+        }
+
+
+        if (currentService.isIdle()) {
+
+            Log.d("Color", "green-idle");
+            errorMessage.setText("");
+            printingState.setText("Idle");
+            printingState.setTextColor(Color.rgb(42, 187, 155));
+            statusCircle.setColorFilter(Color.rgb(42, 187, 155));
+            printCircle.setVisibility(View.GONE);
+            clock.setVisibility(View.GONE);
+
+        } else if (currentService.isOccupied()) {
+
+            statusCircle.setColorFilter(Color.rgb(244, 208, 63));
+            printingState.setTextColor(Color.rgb(244, 208, 63));
+            printingState.setText("Occupied");
+            printCircle.setVisibility(View.GONE);
+            clock.setVisibility(View.GONE);
+            Log.d("Color", "yellow-occupied");
+
+        } else if (currentService.isBusyRed()) {
+
+            statusCircle.setColorFilter(Color.rgb(214, 69, 65));
+            printingState.setTextColor(Color.rgb(214, 69, 65));
+            printingState.setText("Busy");
+            printCircle.setVisibility(View.GONE);
+            clock.setVisibility(View.GONE);
+            Log.d("Color", "red-busy");
+
+        } else if (currentService.isBusyPurple()) {
+            printingState.setText("Busy");
+            statusCircle.setColorFilter(Color.rgb(213, 184, 255));
+            printingState.setTextColor(Color.rgb(213, 184, 255));
+            printCircle.setVisibility(View.GONE);
+            clock.setVisibility(View.GONE);
+            Log.d("Color", "purple-busy(not overtakable)");
+
+        } else if (currentService.isErrorMessage()) {
+
+            errorMessage.setText("Error occured");
+            printingState.setText("");
+            printCircle.setVisibility(View.GONE);
+            clock.setVisibility(View.GONE);
+            errorMessage.setTextColor(Color.rgb(214, 69, 65));
+
+        } else if (currentService.isPrintingMenuState()) {
+            Log.d("Color", "white-printing");
+            printCircle.getDrawable();
+            printCircle.setVisibility(View.VISIBLE);
+            statusCircle.setVisibility(View.GONE);
+            //clock.setVisibility(View.VISIBLE);
+        }
 
 
         return listItem;
