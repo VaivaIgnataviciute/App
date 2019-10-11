@@ -47,8 +47,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="20dp"
             android:paddingBottom="7dp"
-            android:textSize="16dp"
-            android:textStyle="italic" />
+            android:textSize="16dp" />
 
         <TextView
             android:id="@+id/TextView_PrintFileName"

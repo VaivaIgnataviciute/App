@@ -61,8 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private Timer myTimer = new Timer();
 
 
-
-    private Boolean isWifiOnAndConnected() {
+    public Boolean isWifiOnAndConnected() {
 
         WifiManager wifiMgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (wifiMgr.isWifiEnabled()) {
@@ -76,6 +75,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
+
+
+
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,8 +91,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        TextView wifiText = (TextView)(findViewById(R.id.wifiText));
-        ImageView wifiImg = (ImageView) (findViewById(R.id.WifiImage));
 
         services = new ArrayList<>();
         mAdapter = new NsdServiceInfoAdapter(this, R.id.TextView_serviceNickName, services);
@@ -98,17 +102,39 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-        if (isWifiOnAndConnected()) {
-            Log.d("wifi", "wifi is On  ");
-            wifiText.setVisibility(View.GONE);
-            wifiImg.setVisibility(View.GONE);
+
+      myTimer.schedule(new TimerTask() {
+          @Override
+          public void run() {
+              runOnUiThread(new Runnable() {
+                  @Override
+                  public void run() {
+                      if (isWifiOnAndConnected()) {
+                          Log.d("wifi", "wifi is On  ");
+                          TextView wifiText = (findViewById(R.id.wifiText));
+                          ImageView wifiImg = (findViewById(R.id.WifiImage));
+                          wifiText.setVisibility(View.GONE);
+                          wifiImg.setVisibility(View.GONE);
 
 
-        } else {
-            Log.d("wifi", "please turn on your wifi ");
-            wifiText.setText("Please enable wifi which is used by your printer");
+                      } else {
+                          Log.d("wifi", "please turn on your wifi ");
+                          TextView wifiText =  (findViewById(R.id.wifiText));
+                          ImageView wifiImg = (findViewById(R.id.WifiImage));
+                          wifiText.setText(getResources().getString(R.string.wifi));
+                          wifiText.setVisibility(View.VISIBLE);
+                          wifiImg.setVisibility(View.VISIBLE);
 
-        }
+                      }
+                  }
+              });
+          }
+      },0,1000);
+
+
+
+
+
 
 
 
@@ -465,8 +491,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     };
-
-
 
 
 }

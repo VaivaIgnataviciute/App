@@ -39,6 +39,12 @@ public class PrinterNew {
     float percentage =0;
     int currentMenu = 0;
     int printFileState = 0;
+    private RequestQueue aRequestQueue;
+    private  RequestQueue bRequestQueue;
+    private  RequestQueue cRequestQueue;
+    private  RequestQueue dRequestQueue;
+    private  RequestQueue eRequestQueue;
+
 
 
 
@@ -61,11 +67,6 @@ public class PrinterNew {
     }
 
     public  String getPrintFileName(){return printFileName;}
-    private RequestQueue aRequestQueue;
-    private  RequestQueue bRequestQueue;
-    private  RequestQueue cRequestQueue;
-    private  RequestQueue dRequestQueue;
-    private  RequestQueue eRequestQueue;
 
 
     public void  setPrintFileName (String url, Context context, final VolleyCallback callback) {
