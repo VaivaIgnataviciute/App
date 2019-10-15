@@ -401,6 +401,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
+
                     @Override
                     public void onFailure(Object response) {
                         Log.d("NSD", "Current menu response failed");
